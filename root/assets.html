@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>资产管理页面</title>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        function assets() {
+            my_data =  $("#content").val();
+            // alert(my_data);
+            $.ajax({
+                url:"/assets",
+                type:"post",
+                contentType: "application/json; charset=utf-8",
+                data: my_data,
+                dataType: "json",
+                success:function(data){
+                    alert("借还：" +　data.code + " 结果：" + data.result);
+                    alert(JSON.stringify(data))
+                },
+                error:function(e){
+                    alert("错误！！\r\n" + JSON.stringify(e));
+                }
+            });
+        }
+        function add_assets(){
+            my_data =  $("#content").val();
+            // alert(my_data);
+            $.ajax({
+                url:"/assets_add1",
+                type:"post",
+                contentType: "application/json; charset=utf-8",
+                data: my_data,
+                dataType: "json",
+                success:function(response){
+                    alert(JSON.stringify(response))
+                    if (response.code == 'success'){
+                        eco_refresh();
+                    }
+                },
+                error:function(e){
+                    alert("错误！！" + JSON.stringify(e));
+                }
+            });
+        }
+
+
+        function eco_refresh(){
+            var _body = window.parent;
+            var _iframe1=_body.document.getElementById('assets_frame');
+            window.onbeforeunload = function(){};
+            _iframe1.contentWindow.location.reload(true);
+        }
+    </script>
+</head>
+<body>
+<form id="assetsInfo" name="assetsInfo">
+    添加资产ＪＳＯＮ：<br><textarea id="content" name="content" type="text" rows="8"  cols="180">{"code":"A8888","name":"测试名称","userInfo":{"id":"900","mobile":"","avatar_url":"http://ccb.dehuinet.cn:80/photos/user_photo_5","dept_ref_id":"zgjh","login_name":"13517227956","dept_id":"3","title":"","network_id":2,"network_unique_name":"ccb","dept_code":"001","dept_name":"金科","email":"","name":"李林芸","account_id":"595"}}</textarea>
+    <br>
+
+</form>
+<button name="添加" value="添加" onclick="javascript: add_assets()">添加资产</button>
+<button name="借还" value="借还" onclick="javascript: assets()">借还资产</button><br>
+
+<button name="refresh" onclick="javascript: eco_refresh()">刷新列表</button><br>
+<iframe src="/assets_list?user_id=2&limit=20&offset=0" id="assets_frame" name="assets_frame" width="80%" height="50%">
+
+</iframe>
+
+</body>
+</html>
