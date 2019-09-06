@@ -150,7 +150,7 @@ class HttpRequest(object):
                 print(tmp)
                 if not tmp or tmp == b'--\r\n':
                     continue
-                head_content = tmp.split(b'\r\n\r\n',2)
+                head_content = tmp.split(b'\r\n\r\n', 2)
                 if len(head_content) == 2:
                     head, content = head_content
                     head = head.decode('utf-8')

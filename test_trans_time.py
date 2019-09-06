@@ -78,6 +78,19 @@ def getDateMillis(timeRes):
     except (ValueError,TypeError):
         return timeRes
 
+import Image
+from io import BytesIO
+
+def thumbnail(filePath):
+    im = Image.open(filePath)
+    im.thumbnail((40,40))
+    print(im.format,im.size,im.mode)
+    fp = BytesIO()
+    im.save(fp, 'JPEG')
+    buf = fp.getvalue()  #87505553
+    print(buf)
+
+thumbnail('test.jpg')
 
 
 

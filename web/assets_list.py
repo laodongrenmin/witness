@@ -18,7 +18,7 @@ def do(req):
 def do_post(req: HttpRequest):
     # json 字符串格式返回
     body = dict()
-    body["result"] = "failed"
+    body['status'] = 1
     if isinstance(req, HttpRequest):
         # print('[%d] dbMng id:%d' % (os.getpid(), id(dbMng)))
         # Resource interpreted as Document but transferred with MIME type application/json
@@ -31,13 +31,18 @@ def do_post(req: HttpRequest):
         #        '''
 
         # 从Ｓｅｓｓｉｏｎ里面取出用户ＩＤ
-        user_id = int(req.parameters.get('user_id','2'))
-        limit = int(req.parameters.get('limit', '1000'))
-        offset = int(req.parameters.get('offset', '0'))
-        body['result'] = 'success'
-        body['reason'] = 'query success'
-        body['assets'] = dbMng.get_assets_by_user_id(user_id, limit, offset)
-        # req.res_body = '{"result":"failed","reason":"get method is developing"}'.encode('UTF-8')
+        # user_id = int(req.parameters.get('user_id','2'))
+        login_name = req.parameters.get('userInfo.login_name', '')
+        _user = dbMng.get_user_by_logname(login_name)
+        if _user:
+            limit = int(req.parameters.get('limit', '1000'))
+            offset = int(req.parameters.get('offset', '0'))
+            body['status'] = 0
+            body['message'] = 'query success'
+            body['assets'] = dbMng.get_assets_by_user_id(_user.id, limit, offset)
+        else:
+            body['status'] = 1
+            body['message'] = 'user ' + login_name + ' not found.'
     else:
         raise Exception('para req is not HttpRequest')
     ymp = json.dumps(body, ensure_ascii=False)

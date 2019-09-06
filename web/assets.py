@@ -2,45 +2,48 @@
 # -*- coding: UTF-8 -*-
 import json
 from HttpRequest import HttpRequest, ResponseCode, AttachFile
-from web.DBMng import dbMng, AssetsDto
-import re
+from web.DBMng import dbMng, AssetsDto, UserDto
 
 __author__ = 'laodongrenmin'
 __version__ = '0.0.0.1'
 __date__ = '2019/7/23 17:51'
 
 
-def do(req):
-    pass
-
-
 # return byte 已经编码好的字符流
 def do_post(req: HttpRequest):
     # json 字符串格式返回
     body = dict()
-    body["result"] = "failed"
+    body['status'] = 2
     req.res_head['Content-Type'] = 'application/json; charset=UTF-8'
     if isinstance(req, HttpRequest):
         # code, user_id, user_name, name, memo, image, create_time
         paras = req.parameters
         code = paras.get('code', None)
         login_name = paras['userInfo'].get('login_name', None)
+        name = paras['userInfo'].get('name', None)
+        memo = paras['userInfo'].get('dept_name', '建信金科/武汉事业群')
         # print('dbMng id:%d' % id(dbMng))
         if code:
             _assets = dbMng.get_assets_bycode(code=code)
             if _assets:
-                _user = dbMng.get_user_by_logname(login_name)
-                _assets = AssetsDto(code=code)
-                op_type = dbMng.do_biz(_user, _assets)
-                _assets = dbMng.get_assets_bycode(code)
-                if _assets:
-                    body["result"] = "success"
+                _user = UserDto(None, login_name,
+                                name, 0, memo)
+                _assets_tmp = AssetsDto(code=code)
+                op_type = dbMng.do_biz(_user, _assets_tmp)
+                if op_type:
+                    body['status'] = 0
                     body['op_type'] = op_type.name
-                    body['reason'] = '已经成功实现了 ' + op_type.name + ' 动作'
+                    body['message'] = '已经成功实现了 ' + op_type.name + ' 动作'
                     body['assets'] = _assets.to_dict()
-            body["code"] = code
+                else:
+                    body['message'] = '出现了未知错误'
+                    body['assets'] = _assets.to_dict()
+            else:
+                body['status'] = 1
+                body["message"] = "没有找到资产编码为: %s 的资产" % code
         else:
-            body["reason"] = "没有上送资产编码"
+            body['status'] = 1
+            body["message"] = "没有上送资产编码"
         req.res_body = json.dumps(body, ensure_ascii=False).encode('UTF-8')
     else:
         raise Exception('para req is not HttpRequest')
@@ -75,12 +78,6 @@ def do_get(req: HttpRequest):
     else:
         raise Exception('para req is not HttpRequest')
     return True
-
-
     # req.res_head['Content-Type'] = 'application/json; charset=UTF-8'
     # req.res_body = '{"result":"failed","reason":"get method is developing"}'.encode('UTF-8')
-    return True
-
-
-if __name__ == '__main__':
-    exit(0)
+    # return True

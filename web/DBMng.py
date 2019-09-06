@@ -78,24 +78,39 @@ class AssetsDto(object):
         d['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.create_time))
         return d
 
+
 class LogDto(object):
-    def __init__(self, pid=None, user_id=None, op_type=None, log=None, log_time=None):
+    def __init__(self, pid=None, user_id=None, op_type=None, assets_name=None, log=None, log_time=None):
         if isinstance(pid, LogDto):
-            raise Exception('还未实现')
+            pid, user_id, op_type, assets_name, log, log_time = pid.get_all_property()
         elif isinstance(pid, tuple):
-            raise Exception('还未实现')
+            pid, user_id, op_type, assets_name, log, log_time = pid
         self.id = pid
         self.user_id = user_id
         self.op_type = op_type
+        self.assets_name = assets_name
         self.log = log
         self.log_time = log_time
+
+    def get_all_property(self):
+        return self.id, self.user_id, self.op_type, self.assets_name, self.log, self.log_time
+
+    def to_dict(self):
+        d = dict()
+        d['id'] = self.id
+        d['user_id'] = self.user_id
+        d['op_type'] = self.op_type
+        d['assets_name'] = self.assets_name
+        d['log'] = self.log
+        d['log_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.log_time))
+        return d
 
 
 class NoteDto(object):
     def __init__(self, pid=None, assets_code=None, src_user_id=None,
                  dst_user_id=None, witness_id=None, log=None, borrow_time=None):
         if isinstance(pid, NoteDto):
-            raise Exception('还未实现')
+            pid, assets_code, src_user_id, dst_user_id, witness_id, log, borrow_time = self.get_all_property()
         elif isinstance(pid, tuple):
             pid, assets_code, src_user_id, dst_user_id, witness_id, log, borrow_time = pid
         self.id = pid
@@ -105,6 +120,20 @@ class NoteDto(object):
         self.witness_id = witness_id
         self.log = log
         self.borrow_time = borrow_time
+
+    def get_all_property(self):
+        return self.id, self.assets_code, self.src_user_id, self.dst_user_id, self.witness_id, self.log, self.borrow_time
+
+    def to_dict(self):
+        d = dict()
+        d['id'] = self.id
+        d['assets_code'] = self.assets_code
+        d['src_user_id'] = self.src_user_id
+        d['dst_user_id'] = self.dst_user_id
+        d['witness_id'] = self.witness_id
+        d['log'] = self.log
+        d['borrow_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.borrow_time))
+        return d
 
 
 class NoteHisDto(object):
@@ -190,11 +219,60 @@ class DBMng(object):
         if is_commit:
             self.conn.commit()
 
-    def log(self, user_id, op_type, log, is_commit=False):
-        para = (None, user_id, op_type, log, time.time(),)
-        self.insert_one('insert into log values(?,?,?,?,?)',
+    def log(self, user_id, op_type, assets_name, log, is_commit=False):
+        para = (None, user_id, op_type, assets_name, log, time.time(),)
+        self.insert_one('insert into log values(?,?,?,?,?,?)',
                         para, is_commit)
         return para
+
+    def get_log_by_login_name(self, user_login_name, limit=1000, offset=0):
+        _user = self.get_user_by_logname(user_login_name)
+        if _user:
+            return self.get_log(_user.id, limit, offset)
+        else:
+            return list()
+
+    def get_my_borrow(self, user_login_name, limit=1000, offset=0):
+        return self.get_my_log(user_login_name, limit, offset, '2')
+
+    def get_my_reback(self, user_login_name, limit=1000, offset=0):
+        return self.get_my_log(user_login_name, limit, offset, '4')
+
+    def get_my_log(self, user_login_name, limit=1000, offset=0, op_type=None):
+        logs = list()
+        _user = self.get_user_by_logname(user_login_name)
+        op_type_sql = ''
+        if op_type:
+            op_type_sql = ' and op_type=' + op_type
+        if _user:
+            sql = "select id, user_id, op_type, assets_name, log, log_time from log where user_id=? " + op_type_sql + " order by id desc limit ? offset ?"
+            paras = (_user.id, limit, offset,)
+            rows = self.get_all(sql, paras)
+            for row in rows:
+                logs.append(LogDto(pid=row[0], user_id=row[1], op_type=row[2], assets_name=row[3], log=row[4],
+                                   log_time=row[5]).to_dict())
+
+        return logs
+
+    def get_log(self, user_id=None, limit=1000, offset=0):
+        '''
+        获取记录的日志
+        :param user_id:
+        :param limit:
+        :param offset:
+        :return:  日志记录
+        '''
+        if user_id:
+            sql = "select id, user_id, op_type, assets_name, log, log_time from log where user_id=? order by id desc limit ? offset ?"
+            paras = (user_id, limit, offset,)
+        else:
+            sql = "select id, user_id, op_type, assets_name, log, log_time from log order by id desc limit ? offset ?"
+            paras = (limit, offset,)
+        rows = self.get_all(sql, paras)
+        logs = list()
+        for row in rows:
+            logs.append(LogDto(pid=row[0], user_id=row[1], op_type=row[2], assets_name=row[3], log=row[4], log_time=row[5]).to_dict())
+        return logs
 
     def get_or_create_user(self, u):
         ''' 获取用户信息,根据u.log_name查询用户,
@@ -203,12 +281,12 @@ class DBMng(object):
         if not ret_user:
             # 1
             self.insert_user(u.log_name, u.name, u.memo)
-            self.log(0, OpType.系统.value, '新建用户: %s(%s)' % (u.name, u.log_name), True)
+            self.log(0, OpType.系统.value, '', '新建用户: %s(%s)' % (u.name, u.log_name), True)
             ret_user = self.get_user_by_logname(u.log_name)
         return ret_user
 
     def insert_user(self, login_name, user_name=None, user_memo=None, is_commit=False):
-        if isinstance(login_name, UserDto): # 当第一个参数是DTO时候
+        if isinstance(login_name, UserDto):  # 当第一个参数是DTO时候
             u = login_name
             para = (None, u.login_name, u.name, 0, u.memo,)
         else:
@@ -267,6 +345,20 @@ class DBMng(object):
             return NoteDto(pid=row[0], assets_code=row[1], src_user_id=row[2], dst_user_id=row[3],
                            witness_id=row[4], log=row[5], borrow_time=row[6])
 
+    def get_note_by_login_name(self, login_name, limit=20, offset=0):
+        notes = list()
+
+        _user = self.get_user_by_logname(login_name)
+        if _user:
+            paras = (_user.id, limit, offset,)
+            rows = self.get_all(
+                "select id, assets_code, src_user_id, dst_user_id, witness_id, log, borrow_time from note where dst_user_id = ? order by id desc limit ? offset ?",
+                paras)
+            for row in rows:
+                notes.append(NoteDto(pid=row[0], assets_code=row[1], src_user_id=row[2], dst_user_id=row[3],
+                           witness_id=row[4], log=row[5], borrow_time=row[6]).to_dict())
+        return notes
+
     def get_note_by_assets_code(self, code):
         row = self.get_one('''select id, assets_code, src_user_id, dst_user_id, witness_id,
                             log, borrow_time from note where assets_code = ?''', (code,))
@@ -313,7 +405,7 @@ class DBMng(object):
 
             ret_witness = self.insert_witness(_assets.code, _note.src_user_id, _note.dst_user_id, content, image)
             self.log(_src_user.id if op_log_name == _src_user.log_name else _dst_user.log_name,
-                     OpType.生成借条.value, content)
+                     OpType.生成借条.value, _assets.name, content)
             return ret_witness
         else:
             raise Exception('此用户无权生成此见证书')
@@ -349,7 +441,7 @@ class DBMng(object):
             _assets.user_id = user.id
             _assets.user_name = user.name
             self.insert_assets(_assets)
-            self.log(user.id, OpType.新建.value, '新建资产：%s(%s) 资产 %s' % (user.name, user.log_name, _assets.name))
+            self.log(user.id, OpType.新建.value, _assets.name, '新建资产：%s(%s) 资产 %s' % (user.name, user.log_name, _assets.name))
         except BaseException:
             trace_id = tools.Utils.generate_id()
             e_str = '新建资产失败,跟踪号: %s' % trace_id
@@ -364,7 +456,7 @@ class DBMng(object):
         log_str = '借出资产：%s 的 %s' % (assets.user_name, content)
         try:
             self.insert_note(assets.code, assets.user_id, user.id, None, content, time.time())
-            self.log(user.id, OpType.借出.value, log_str)
+            self.log(user.id, OpType.借出.value, assets.name, log_str)
         except BaseException:
             trace_id = tools.Utils.generate_id()
             e_str = '%s 失败,跟踪号: %s' % (log_str, trace_id)
@@ -382,7 +474,7 @@ class DBMng(object):
                                  src_user.name, src_user.memo, dst_user.log_name, dst_user.name,
                                  dst_user.memo, note.log, note.borrow_time, time.time())
             self.del_note_by_id(note.id)
-            self.log(user.id, OpType.归还.value, content)
+            self.log(user.id, OpType.归还.value, assets.name, content)
         except BaseException:
             trace_id = tools.Utils.generate_id()
             e_str = '归还资产失败,跟踪号: %s' % trace_id
@@ -490,11 +582,12 @@ tables = {
                 ID INTEGER PRIMARY KEY, 
                 USER_ID INT, 
                 OP_TYPE INT,  --enum 见 OpType 
+                ASSETS_NAME VARCHAR(40),
                 LOG TEXT(200),
                 LOG_TIME TIMESTAMP)''',
                 "insert into log values(?,?,?,?,?)",
-                [(None, 3, OpType.借出, '小李子借给小东子餐卡', time.time()),
-                 (None, 2, OpType.借出, '小东子借给小李子餐卡', time.time()),]],
+                [(None, 3, OpType.借出, '餐卡','小李子借给小东子餐卡', time.time()),
+                 (None, 2, OpType.借出, '餐卡','小东子借给小李子餐卡', time.time()),]],
 
     "NOTE":['''
         CREATE TABLE NOTE (
@@ -561,7 +654,7 @@ def pre_db():
     if os.path.isfile(db_name):
         # 先备份,再删除
         shutil.copyfile(db_name, db_name+str(decimal.Decimal(time.time()*10000000))+'.bak')
-        os.remove(db_name)
+        # os.remove(db_name)
         pass
     with sqlite3.connect(database=db_name) as conn:
         for table_name in tables:
@@ -591,7 +684,6 @@ def show_db():
 
 # show_db()
 if __name__ == '__main__':
-    l = LogDto(log_time=time.time())
     pre_db()
     # show_db()
     dbMng = DBMng(db_name)

@@ -15,11 +15,10 @@
                 data: my_data,
                 dataType: "json",
                 success:function(data){
-                    alert("借还：" +　data.code + " 结果：" + data.result);
                     alert(JSON.stringify(data))
                 },
                 error:function(e){
-                    alert("错误！！\r\n" + JSON.stringify(e));
+                    alert(JSON.stringify(e));
                 }
             });
         }
@@ -27,7 +26,7 @@
             my_data =  $("#content").val();
             // alert(my_data);
             $.ajax({
-                url:"/assets_add1",
+                url:"/assets_add",
                 type:"post",
                 contentType: "application/json; charset=utf-8",
                 data: my_data,
@@ -39,17 +38,20 @@
                     }
                 },
                 error:function(e){
-                    alert("错误！！" + JSON.stringify(e));
+                    alert(JSON.stringify(e));
                 }
             });
         }
 
 
-        function eco_refresh(){
+        function eco_refresh(req_url){
             var _body = window.parent;
             var _iframe1=_body.document.getElementById('assets_frame');
-            window.onbeforeunload = function(){};
-            _iframe1.contentWindow.location.reload(true);
+            var cur_timestamp = new Date().getTime();
+            _iframe1.src = req_url + '&t=' + cur_timestamp;
+            //_iframe1.src = '/assets_list?user_id=2&limit=20&offset=0';
+            // window.onbeforeunload = function(){};
+            // _iframe1.contentWindow.location.load(true);
         }
     </script>
 </head>
@@ -60,9 +62,12 @@
 
 </form>
 <button name="添加" value="添加" onclick="javascript: add_assets()">添加资产</button>
-<button name="借还" value="借还" onclick="javascript: assets()">借还资产</button><br>
+<button name="借还" value="借还" onclick="javascript: assets()">借还资产</button>  &nbsp;&nbsp;|&nbsp;&nbsp;
+<button name="refresh1" onclick="javascript: eco_refresh('/assets_list?user_id=2&limit=5&offset=0')">刷新资产列表</button>
+<button name="refresh2" onclick="javascript: eco_refresh('/log_list?action=4&userInfo.login_name=13517227956&limit=5&offset=0')">显示我归还的</button>
+<button name="refresh3" onclick="javascript: eco_refresh('/note_list?action=2&userInfo.login_name=13517227956&limit=5&offset=0')">显示我借到的</button>
+<button name="refresh4" onclick="javascript: eco_refresh('/assets_list?userInfo.login_name=13517227956&limit=5&offset=0')">显示我的物品</button>
 
-<button name="refresh" onclick="javascript: eco_refresh()">刷新列表</button><br>
 <iframe src="/assets_list?user_id=2&limit=20&offset=0" id="assets_frame" name="assets_frame" width="80%" height="50%">
 
 </iframe>
