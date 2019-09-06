@@ -204,7 +204,7 @@ class HttpRequest(object):
             ".ico": "image/x-icon", ".js": "application/x-javascript"
         }
         path = os.path.join(os.path.split(os.path.realpath(__file__))[0], "root")
-        p = os.path.join(path, self.command.path[1:])
+        p = os.path.join(path, self.command.path[5:])  # 去掉头 /wtn/
         if not os.path.isfile(p):
             self.res_head['Content-Type'] = 'text/html'
             p = os.path.join(path, '404.html')
