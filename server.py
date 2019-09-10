@@ -255,5 +255,5 @@ if __name__ == '__main__':
         Server.stop(None)
         exit(1)
 
-    s = Server(process_number=2, queue_number=14)
+    s = Server(host='0.0.0.0', port=8010, process_number=1, queue_number=14)
     s.run()

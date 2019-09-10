@@ -2,14 +2,16 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href=/wtn/favicon.ico type=image/x-icon>
     <title>资产管理页面</title>
-    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/wtn/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript">
         function assets() {
+            // https://code.jquery.com/jquery-3.1.1.min.js
             my_data =  $("#content").val();
             // alert(my_data);
             $.ajax({
-                url:"/assets",
+                url:"/wtn/assets",
                 type:"post",
                 contentType: "application/json; charset=utf-8",
                 data: my_data,
@@ -63,12 +65,11 @@
 </form>
 <button name="添加" value="添加" onclick="javascript: add_assets()">添加资产</button>
 <button name="借还" value="借还" onclick="javascript: assets()">借还资产</button>  &nbsp;&nbsp;|&nbsp;&nbsp;
-<button name="refresh1" onclick="javascript: eco_refresh('/wtn/assets_list?user_id=2&limit=5&offset=0')">刷新资产列表</button>
 <button name="refresh2" onclick="javascript: eco_refresh('/wtn/log_list?action=4&userInfo.login_name=13517227956&limit=5&offset=0')">显示我归还的</button>
 <button name="refresh3" onclick="javascript: eco_refresh('/wtn/note_list?action=2&userInfo.login_name=13517227956&limit=5&offset=0')">显示我借到的</button>
 <button name="refresh4" onclick="javascript: eco_refresh('/wtn/assets_list?userInfo.login_name=13517227956&limit=5&offset=0')">显示我的物品</button>
 
-<iframe src="/wtn/assets_list?user_id=2&limit=20&offset=0" id="assets_frame" name="assets_frame" width="80%" height="50%">
+<iframe src="/wtn/assets_list?userInfo.login_name=13517227956&limit=5&offset=0" id="assets_frame" name="assets_frame" width="80%" height="50%">
 
 </iframe>
 

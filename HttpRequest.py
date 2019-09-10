@@ -80,6 +80,8 @@ class AttachFile(object):
 
 class HttpRequest(object):
 
+    root_url = '/wtn'
+
     gmt_format = '%a, %d %b %Y %X GMT+0800(CST)'
 
     def __init__(self, sock, addr, db_conn):
@@ -126,17 +128,17 @@ class HttpRequest(object):
                 if len(head_line) == 0:
                     continue
                 self.parse_head(head_line)
-
         else:
             if not request_line:
                 print('[%d] client socket closed. %s' % (os.getpid(), self.addr))
-                self.sock.close()
-            # print("read head wrong.", request_line)   # too long or wrong
+            else:
+                print("[%d] read head wrong. %s" % (os.getpid(), self.addr))
+            self.sock.close()
             raise Exception('client socket closed.')
 
     def parse_body(self):
-        print(self._raw_head)
-        print(self._raw_body)
+        # print(self._raw_head)
+        # print(self._raw_body)
         content_type = ContentType(self.req_head['Content-Type'])
         if content_type.is_json():
             self.parameters.update(json.loads(self._raw_body.decode('UTF-8')))
@@ -204,7 +206,15 @@ class HttpRequest(object):
             ".ico": "image/x-icon", ".js": "application/x-javascript"
         }
         path = os.path.join(os.path.split(os.path.realpath(__file__))[0], "root")
-        p = os.path.join(path, self.command.path[5:])  # 去掉头 /wtn/
+        cp = self.command.path
+        if cp.startswith(self.root_url):
+            cp = cp[len(self.root_url)+1:]
+        elif cp.startswith('/'):
+            cp = cp[2:]
+        else:
+            cp = cp[1:]
+        p = os.path.join(path, cp)  # 去掉头 /wtn/
+        print(p)
         if not os.path.isfile(p):
             self.res_head['Content-Type'] = 'text/html'
             p = os.path.join(path, '404.html')
@@ -231,15 +241,14 @@ class HttpRequest(object):
 
         keep_alive = self.req_head.get('Connection', 'Close')
         self.res_head['Connection'] = keep_alive   # 'Keep-Alive' or 'Close' 需要检查报文头，是close，还是keep-Alive
-        cookie = self.req_head.get('Cookie', None)
-        print('[%d] %s' %(os.getpid(), cookie) )
+        cookie = self.req_head.get('Cookie', '')
+        # print('[%d] %s' %(os.getpid(), cookie) )
         if cookie:
-            if cookie.upper().find('SESSIONID=') == -1:
-                cookie = "%s\r\nSet-Cookie: sessionid=%s;" % (cookie, utils.generate_id())
+            if cookie.upper().find('PSESSIONID=') == -1:
+                cookie = "psessionid=%s;" % (utils.generate_id())
         else:
-            cookie = "sessionid=%s;" % utils.generate_id()
+            cookie = "psessionid=%s;" % utils.generate_id()
 
-        # self.res_head['Set-Cookie'] = cookie if cookie else ('PSessionID=%s;' % utils.generate_id())
         self.res_head['Set-Cookie'] = cookie
 
         m = router.get(self.command.path, None)

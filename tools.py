@@ -7,7 +7,8 @@ class Utils():
     def dict2header(d):
         header = ''
         for k in d:
-            header = header + k + ": " + d[k] + '\r\n'
+            if d[k]:
+                header = header + k + ": " + d[k] + '\r\n'
         return header + '\r\n'
 
     @staticmethod
