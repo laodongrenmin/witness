@@ -17,7 +17,7 @@ def do_post(req: HttpRequest):
     body['message'] = 'unknown error.'
     if isinstance(req, HttpRequest):
         req.res_head['Content-Type'] = 'text/html; charset=UTF-8'
-        action = req.parameters.get('action','4')
+        action = req.parameters.get('action','all')
 
         # 从Ｓｅｓｓｉｏｎ里面取出用户ＩＤ
         login_name = req.parameters.get('userInfo.login_name', '')
@@ -30,6 +30,10 @@ def do_post(req: HttpRequest):
             body['message'] = 'query success'
         elif action == '2':  # OpType.借出
             body['borrow'] = dbMng.get_my_borrow(login_name, limit, offset)
+            body['status'] = 0
+            body['message'] = 'query success'
+        elif action == 'all':  # 全部
+            body['borrow'] = dbMng.get_my_log(login_name, limit, offset)
             body['status'] = 0
             body['message'] = 'query success'
         else:

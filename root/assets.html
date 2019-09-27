@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href=/wtn/favicon.ico type=image/x-icon>
+    <link rel="shortcut icon" href="/wtn/favicon.ico" type=image/x-icon>
     <title>资产管理页面</title>
     <script type="text/javascript" src="/wtn/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript">
@@ -65,10 +65,13 @@
 </form>
 <button name="添加" value="添加" onclick="javascript: add_assets()">添加资产</button>
 <button name="借还" value="借还" onclick="javascript: assets()">借还资产</button>  &nbsp;&nbsp;|&nbsp;&nbsp;
-<button name="refresh2" onclick="javascript: eco_refresh('/wtn/log_list?action=4&userInfo.login_name=13517227956&limit=5&offset=0')">显示我归还的</button>
-<button name="refresh3" onclick="javascript: eco_refresh('/wtn/note_list?action=2&userInfo.login_name=13517227956&limit=5&offset=0')">显示我借到的</button>
+<button name="refresh2" onclick="javascript: eco_refresh('/wtn/note_list?action=returned&userInfo.login_name=13517227956&limit=5&offset=0')">显示我归还的</button>
+<button name="refresh3" onclick="javascript: eco_refresh('/wtn/note_list?action=borrowed&userInfo.login_name=13517227956&limit=5&offset=0')">显示我借到的</button>
 <button name="refresh4" onclick="javascript: eco_refresh('/wtn/assets_list?userInfo.login_name=13517227956&limit=5&offset=0')">显示我的物品</button>
-
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<button name="refresh5" onclick="javascript: eco_refresh('/wtn/log_list?action=4&userInfo.login_name=13517227956&limit=5&offset=0')">我归还的日志</button>
+<button name="refresh6" onclick="javascript: eco_refresh('/wtn/log_list?action=2&userInfo.login_name=13517227956&limit=5&offset=0')">我借出的日志</button>
+<button name="refresh7" onclick="javascript: eco_refresh('/wtn/log_list?userInfo.login_name=13517227956&limit=5&offset=0')">我的操作日志</button>
 <iframe src="/wtn/assets_list?userInfo.login_name=13517227956&limit=5&offset=0" id="assets_frame" name="assets_frame" width="80%" height="50%">
 
 </iframe>

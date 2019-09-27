@@ -74,7 +74,7 @@ class AssetsDto(object):
         d['user_name'] = self.user_name
         d['name'] = self.name
         d['memo'] = self.memo
-        d['image'] = '/assets?code=' + self.code  # 给出访问图像的地址
+        d['image'] = '/wtn/assets?action=getimage&code=' + self.code  # 给出访问图像的地址
         d['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.create_time))
         return d
 
@@ -165,6 +165,24 @@ class NoteHisDto(object):
         self.src_name, self.src_memo, self.dst_login_name, self.dst_name, self.dst_memo, self.log = log,
         self.borrow_time, self.reback_time
 
+    def to_dict(self):
+        d = dict()
+        d['id'] = self.id
+        d['assets_code'] = self.assets_code
+        d['src_user_id'] = self.src_user_id
+        d['dst_user_id'] = self.dst_user_id
+        d['witness_id'] = self.witness_id
+        d['src_login_name'] = self.src_login_name
+        d['src_name'] = self.src_name
+        d['src_memo'] = self.src_memo
+        d['dst_login_name '] = self.dst_login_name
+        d['dst_name'] = self.dst_name
+        d['dst_memo'] = self.dst_memo
+        d['log'] = self.log
+        d['reback_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.reback_time))
+        d['borrow_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.borrow_time))
+        return d
+
 
 class WitnessDto(object):
     def __init__(self, pid=None, assets_code=None, src_user_id=None, dst_user_id=None, witness_content=None,
@@ -233,10 +251,10 @@ class DBMng(object):
             return list()
 
     def get_my_borrow(self, user_login_name, limit=1000, offset=0):
-        return self.get_my_log(user_login_name, limit, offset, '2')
+        return self.get_note_by_login_name(user_login_name, limit, offset)
 
     def get_my_reback(self, user_login_name, limit=1000, offset=0):
-        return self.get_my_log(user_login_name, limit, offset, '4')
+        return self.get_note_his_by_login_name(user_login_name, limit, offset)
 
     def get_my_log(self, user_login_name, limit=1000, offset=0, op_type=None):
         logs = list()
@@ -365,6 +383,23 @@ class DBMng(object):
         if row:
             return NoteDto(pid=row[0], assets_code=row[1], src_user_id=row[2], dst_user_id=row[3],
                            witness_id=row[4], log=row[5], borrow_time=row[6])
+
+    def get_note_his_by_login_name(self, login_name, limit=20, offset=0):
+        his = list()
+        _user = self.get_user_by_logname(login_name)
+        if _user:
+            paras = (_user.id, limit, offset,)
+            rows = self.get_all(
+                "select id, assets_code, src_user_id, dst_user_id, witness_id, src_login_name, "
+                "src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time "
+                "from note_his where dst_user_id = ? order by id desc limit ? offset ?",
+                paras)
+            for row in rows:
+                his.append(NoteHisDto(pid=row[0], assets_code=row[1], src_user_id=row[2], dst_user_id=row[3],
+                 witness_id=row[4],  src_login_name=row[5], src_name=row[6], src_memo=row[7],
+                 dst_login_name=row[8], dst_name=row[9], dst_memo=row[10],
+                 log=row[11], borrow_time=row[12], reback_time=row[13]).to_dict())
+        return his
 
     def get_witness_by_id(self, witnesss_id):
         row = self.get_one('''select id, assets_code, src_user_id, dst_user_id ,

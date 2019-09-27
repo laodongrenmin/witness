@@ -3,7 +3,6 @@ import socket
 import multiprocessing
 import time
 import os, sys
-import random
 from queue import Empty
 import signal
 import traceback
@@ -96,10 +95,10 @@ def tcp_link(sock, addr, alive_sock_queue, conn):
     except Exception as e:
         if str(e).find('client socket closed.') != -1:
             return
-        exception_trace_id = utils.generate_id()
+        exception_trace_id = utils.generate_id() + ' ' + str(e)
         print('[%d] tcp_link TraceId:%s %s' % (os.getpid(), exception_trace_id, traceback.format_exc()))
-    except BaseException:
-        exception_trace_id = utils.generate_id()
+    except BaseException as be:
+        exception_trace_id = utils.generate_id() + ' ' + str(be)
         print('[%d] tcp_link TraceId:%s %s' % (os.getpid(), exception_trace_id, traceback.format_exc()))
 
     if exception_trace_id:

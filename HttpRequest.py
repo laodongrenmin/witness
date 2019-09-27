@@ -71,7 +71,16 @@ class AttachFile(object):
         self.head = _filed_head
         self.content = _filed_content
         self.name = re.sub('name="|";', '', re.findall('name=".+";', self.head)[0])
-        self.content_type = re.sub('Content-Type: ', '', re.findall('Content-Type:.+', self.head)[0])
+        tmpct = re.findall('Content-Type:.+', self.head)
+        if(len(tmpct) == 0):
+            tmpct = re.findall('content-type:.+', self.head)
+        else:
+            self.content_type = re.sub('Content-Type: ', '', tmpct[0])
+        if (len(tmpct) == 0):
+            raise Exception('Attachfile Content-Type or content-type not found.')
+        else:
+            self.content_type = re.sub('Content-Type: ', '', tmpct[0])
+
         self.file_name = re.sub('filename="|"', '', re.findall('filename=".+"', self.head)[0])
 
     def get_bytes(self):
@@ -108,7 +117,7 @@ class HttpRequest(object):
         line = line.decode('UTF-8').strip('\r\n')
         k_v = line.split(': ', 1)
         if len(k_v) == 2:
-            self.req_head[k_v[0]] = k_v[1]
+            self.req_head[k_v[0].title()] = k_v[1]
         else:
             self.req_head[k_v] = ''
 
@@ -137,8 +146,8 @@ class HttpRequest(object):
             raise Exception('client socket closed.')
 
     def parse_body(self):
-        # print(self._raw_head)
-        # print(self._raw_body)
+        print(self._raw_head)
+        print(self._raw_body)
         content_type = ContentType(self.req_head['Content-Type'])
         if content_type.is_json():
             self.parameters.update(json.loads(self._raw_body.decode('UTF-8')))
