@@ -60,20 +60,12 @@ class ProcessPool():
                 # print(os.getpid(),self.term_flag)
                 func, args = work_queue.get(block=True, timeout=1.0)
                 func(*args, alive_sock_queue, conn)
-
             except Empty:
-                # cur = conn.cursor()
-                # cur.executemany('insert into  user values(?,?,?,?)',[(None, '13517227956', '小李子[' + str(os.getpid()) + ']' + str(time.time()), '建设银行/金融科技/武汉事业群/技术服务/前端开发'),
-                #  (None, '18995533521', '小东子['+ str(os.getpid()) + ']' + str(time.time()), '建设银行/金融科技/武汉事业群/技术服务/后端开发'), ])
-                # cur.close()
-                # conn.commit()
-                # continue
                 pass
             except BaseException:  # ignore all exception
                 print('[%d] pool %s' % (os.getpid(), traceback.format_exc()))
                 time.sleep(0.001)
                 pass
-
         conn.close()
         print('[%d] exit.' % os.getpid())
 
@@ -116,6 +108,7 @@ def tcp_link(sock, addr, alive_sock_queue, conn):
         sock.sendall(req.res_command)
         sock.sendall(response_header)
         sock.sendall(req.res_body)
+
         if req.res_head.get('Connection', 'Close').lower() == 'keep-alive':
             data = types.SimpleNamespace(sock=sock, addr=addr)
             alive_sock_queue.put(data)
@@ -149,6 +142,7 @@ class Server(object):
     def service_connection(self, key, mask):
         if mask == selectors.EVENT_READ:
             self.sel.unregister(key.fileobj)
+            key.fileobj.setblocking(True)
             self.pool.add_work(tcp_link, *(key.fileobj, key.data.addr))
 
     def run(self):
@@ -178,6 +172,7 @@ class Server(object):
                 while True:
                     try:
                         data = self.pool.alive_sock_queue.get(block=False)
+                        data.sock.setblocking(False)
                         self.sel.register(data.sock, selectors.EVENT_READ, data)
                     except Empty:
                         break
@@ -254,5 +249,5 @@ if __name__ == '__main__':
         Server.stop(None)
         exit(1)
 
-    s = Server(host='0.0.0.0', port=8010, process_number=1, queue_number=14)
+    s = Server(host='0.0.0.0', port=8010, process_number=1, queue_number=1)
     s.run()

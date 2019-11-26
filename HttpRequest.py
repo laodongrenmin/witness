@@ -146,8 +146,8 @@ class HttpRequest(object):
             raise Exception('client socket closed.')
 
     def parse_body(self):
-        print(self._raw_head)
-        print(self._raw_body)
+        # print(self._raw_head)
+        # print(self._raw_body)
         content_type = ContentType(self.req_head['Content-Type'])
         if content_type.is_json():
             self.parameters.update(json.loads(self._raw_body.decode('UTF-8')))
@@ -237,6 +237,7 @@ class HttpRequest(object):
         self.res_head['Expires'] = (datetime.datetime.now() + datetime.timedelta(days=30)).strftime(self.gmt_format)
 
         f = open(p, 'rb')
+        # 文件大了就有隐患
         self.res_body = f.read()
         return True
 

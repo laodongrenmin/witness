@@ -40,12 +40,35 @@
                     }
                 },
                 error:function(e){
-                    alert(JSON.stringify(e));
+                    alert('error:'+JSON.stringify(e));
                 }
             });
         }
 
+        function add_my_assets() {
+            call_remote("/wtn/my_assets_add")
+        }
 
+        function call_remote(req_url) {
+            my_data =  $("#content").val();
+            // alert(my_data);
+            $.ajax({
+                url: req_url,
+                type:"post",
+                contentType: "application/json; charset=utf-8",
+                data: my_data,
+                dataType: "json",
+                success:function(response){
+                    alert(JSON.stringify(response))
+                    if (response.code == 'success'){
+                        eco_refresh();
+                    }
+                },
+                error:function(e){
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
         function eco_refresh(req_url){
             var _body = window.parent;
             var _iframe1=_body.document.getElementById('assets_frame');
@@ -62,13 +85,16 @@
     添加资产ＪＳＯＮ：<br><textarea id="content" name="content" type="text" rows="8"  cols="180">{"code":"A8888","name":"测试名称","userInfo":{"id":"900","mobile":"","avatar_url":"http://ccb.dehuinet.cn:80/photos/user_photo_5","dept_ref_id":"zgjh","login_name":"13517227956","dept_id":"3","title":"","network_id":2,"network_unique_name":"ccb","dept_code":"001","dept_name":"金科","email":"","name":"李林芸","account_id":"595"}}</textarea>
     <br>
 
-    
+
 </form>
-<button name="添加" value="添加" onclick="javascript: add_assets()">添加资产</button>
+
 <button name="借还" value="借还" onclick="javascript: assets()">借还资产</button>  &nbsp;&nbsp;|&nbsp;&nbsp;
+<button name="添加资产" value="添加资产" onclick="javascript: add_assets()">添加资产</button>
+<button name="添加我的物品" value="添加我的物品" onclick="javascript: add_my_assets()">添加我的物品</button> &nbsp;&nbsp;|&nbsp;&nbsp;
+
 <button name="refresh2" onclick="javascript: eco_refresh('/wtn/note_list?action=returned&userInfo.login_name=13517227956&limit=5&offset=0')">显示我归还的</button>
 <button name="refresh3" onclick="javascript: eco_refresh('/wtn/note_list?action=borrowed&userInfo.login_name=13517227956&limit=5&offset=0')">显示我借到的</button>
-<button name="refresh4" onclick="javascript: eco_refresh('/wtn/assets_list?userInfo.login_name=13517227956&limit=5&offset=0')">显示我的物品</button>
+<button name="refresh4" onclick="javascript: eco_refresh('/wtn/my_assets_list?userInfo.login_name=13517227956&limit=5&offset=0')">显示我的物品</button>
 &nbsp;&nbsp;|&nbsp;&nbsp;
 <button name="refresh5" onclick="javascript: eco_refresh('/wtn/log_list?action=4&userInfo.login_name=13517227956&limit=5&offset=0')">我归还的日志</button>
 <button name="refresh6" onclick="javascript: eco_refresh('/wtn/log_list?action=2&userInfo.login_name=13517227956&limit=5&offset=0')">我借出的日志</button>

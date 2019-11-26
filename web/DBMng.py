@@ -51,10 +51,10 @@ class UserDto(object):
 
 
 class AssetsDto(object):
-    def __init__(self,code=None,user_id=None,user_name=None,name=None,memo=None,image=None,create_time=None):
+    def __init__(self, code=None, user_id=None, user_name=None, name=None, memo=None, image=None, create_time=None):
         if isinstance(code, AssetsDto):
             code, user_id, user_name, name, memo, image, create_time = code.get_all_property()
-        elif isinstance(code , tuple):
+        elif isinstance(code, tuple):
             code, user_id, user_name, name, memo, image, create_time = code
         self.code = code
         self.user_id = user_id
@@ -74,7 +74,40 @@ class AssetsDto(object):
         d['user_name'] = self.user_name
         d['name'] = self.name
         d['memo'] = self.memo
-        d['image'] = '/wtn/assets?action=getimage&code=' + self.code  # 给出访问图像的地址
+        d['image'] = '/wtn/assets?action=get_image&code=' + self.code  # 给出访问图像的地址
+        d['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.create_time))
+        return d
+
+
+class MyAssetsDto(object):
+    def __init__(self,pid=None,code=None,user_id=None,user_name=None,name=None,memo=None,status=None,create_time=None):
+        id = pid
+        if isinstance(pid, MyAssetsDto):
+            id, code, user_id, user_name, name, memo, status, create_time = pid.get_all_property()
+        elif isinstance(pid , tuple):
+            id, code, user_id, user_name, name, memo, status, create_time = pid
+        self.id = id
+        self.code = code
+        self.user_id = user_id
+        self.user_name = user_name
+        self.name = name
+        self.memo = memo
+        self.status = status
+        self.create_time = create_time
+
+    def get_all_property(self):
+        return self.id, self.code, self.user_id, self.user_name, self.name, self.memo, self.status, self.create_time
+
+    def to_dict(self):
+        d = dict()
+        d['id'] = self.id
+        d['code'] = self.code
+        d['user_id'] = self.user_id
+        d['user_name'] = self.user_name
+        d['name'] = self.name
+        d['memo'] = self.memo
+        d['status'] = self.status
+        d['image'] = '/wtn/assets?action=get_image&code=' + self.code  # 给出访问图像的地址
         d['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.create_time))
         return d
 
@@ -107,14 +140,15 @@ class LogDto(object):
 
 
 class NoteDto(object):
-    def __init__(self, pid=None, assets_code=None, src_user_id=None,
+    def __init__(self, pid=None, assets_code=None, assets_name=None, src_user_id=None,
                  dst_user_id=None, witness_id=None, log=None, borrow_time=None):
         if isinstance(pid, NoteDto):
-            pid, assets_code, src_user_id, dst_user_id, witness_id, log, borrow_time = self.get_all_property()
+            pid, assets_code, assets_name, src_user_id, dst_user_id, witness_id, log, borrow_time = pid.get_all_property()
         elif isinstance(pid, tuple):
-            pid, assets_code, src_user_id, dst_user_id, witness_id, log, borrow_time = pid
+            pid, assets_code, assets_name, src_user_id, dst_user_id, witness_id, log, borrow_time = pid
         self.id = pid
         self.assets_code = assets_code
+        self.assets_name = assets_name
         self.src_user_id = src_user_id
         self.dst_user_id = dst_user_id
         self.witness_id = witness_id
@@ -122,12 +156,13 @@ class NoteDto(object):
         self.borrow_time = borrow_time
 
     def get_all_property(self):
-        return self.id, self.assets_code, self.src_user_id, self.dst_user_id, self.witness_id, self.log, self.borrow_time
+        return self.id, self.assets_code, self.assets_name, self.src_user_id, self.dst_user_id, self.witness_id, self.log, self.borrow_time
 
     def to_dict(self):
         d = dict()
         d['id'] = self.id
         d['assets_code'] = self.assets_code
+        d['assets_name'] = self.assets_name
         d['src_user_id'] = self.src_user_id
         d['dst_user_id'] = self.dst_user_id
         d['witness_id'] = self.witness_id
@@ -137,16 +172,17 @@ class NoteDto(object):
 
 
 class NoteHisDto(object):
-    def __init__(self, pid, assets_code= None, src_user_id= None, dst_user_id= None,
+    def __init__(self, pid, assets_code= None, assets_name=None, src_user_id= None, dst_user_id= None,
                  witness_id= None,  src_login_name= None, src_name= None, src_memo= None,
                  dst_login_name= None,dst_name= None,dst_memo= None,
                  log= None,borrow_time= None, reback_time= None):
         if isinstance(pid, NoteHisDto):
-            pid, assets_code, src_user_id, dst_user_id, witness_id, src_login_name, src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time = pid.get_all_property()
+            pid, assets_code, assets_name, src_user_id, dst_user_id, witness_id, src_login_name, src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time = pid.get_all_property()
         elif isinstance(pid, tuple):
-            pid, assets_code, src_user_id, dst_user_id,witness_id, src_login_name, src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time = pid
+            pid, assets_code, assets_name, src_user_id, dst_user_id,witness_id, src_login_name, src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time = pid
         self.id = pid
         self.assets_code = assets_code
+        self.assets_name = assets_name
         self.src_user_id = src_user_id
         self.dst_user_id = dst_user_id
         self.witness_id = witness_id
@@ -161,7 +197,7 @@ class NoteHisDto(object):
         self.reback_time = reback_time
 
     def get_all_property(self):
-        return self.id , self.assets_code,self.src_user_id ,self.dst_user_id, self.witness_id , self.src_login_name,
+        return self.id , self.assets_code, self.assets_name, self.src_user_id ,self.dst_user_id, self.witness_id , self.src_login_name,
         self.src_name, self.src_memo, self.dst_login_name, self.dst_name, self.dst_memo, self.log = log,
         self.borrow_time, self.reback_time
 
@@ -169,6 +205,7 @@ class NoteHisDto(object):
         d = dict()
         d['id'] = self.id
         d['assets_code'] = self.assets_code
+        d['assets_name'] = self.assets_name
         d['src_user_id'] = self.src_user_id
         d['dst_user_id'] = self.dst_user_id
         d['witness_id'] = self.witness_id
@@ -194,6 +231,44 @@ class WitnessDto(object):
         self.witness_content = witness_content
         self.witness_image = witness_image
         self.witness_time = witness_time
+
+class AssetsWrapperDto(object):
+    def _init_(self,assets_code,assets_name,src_user_id, src_user_login, src_user_name,
+               dst_user_id, dst_user_login, dst_user_name,
+               borrow_time, reback_time, content, status):
+        self.assets_code = assets_code
+        self.assets_name = assets_name
+        self.src_user_id = src_user_id
+        self.src_user_login = src_user_login
+        self.src_user_name = src_user_name
+        self.dst_user_id = dst_user_id
+        self.dst_user_login = dst_user_login
+        self.dst_user_name = dst_user_name
+        self.borrow_time = borrow_time
+        self.reback_time = reback_time
+        self.content = content
+        self.status = status
+
+    def to_dict(self):
+        d = dict()
+        d['assets_code'] = self.assets_code
+        d['assets_name'] = self.assets_name
+        d['src_user_id'] = self.src_user_id
+        d['src_user_login'] = self.src_user_login
+        d['src_user_name'] = self.src_user_name
+        d['dst_user_id'] = self.dst_user_id
+        d['dst_user_login'] = self.dst_user_login
+        d['dst_user_name'] = self.dst_user_name
+        d['content'] = self.content
+        d['status'] = self.status
+        if self.reback_time:
+            d['reback_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.reback_time))
+        else:
+            d['reback_time'] = None
+        if self.borrow_time:
+            d['borrow_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.borrow_time))
+        else:
+            d['borrow_time'] = None
 
 
 class DBMng(object):
@@ -312,6 +387,28 @@ class DBMng(object):
         self.insert_one("insert into user values(?,?,?,?,?)",para , is_commit)
         return UserDto(para)
 
+    def get_myassets_by_user_id(self, user_id=None, limit=1000, offset=0):
+        '''
+        获取某个用户管理的的资产，用于还资产
+        :param user_id:
+        :param limit:
+        :param offset:
+        :return:  资产，但是不包含图片字段
+        '''
+        paras = (user_id, limit, offset,)
+        rows = self.get_all("select id, code, user_id, user_name, name, memo, status, create_time from my_assets where user_id = ? order by create_time desc limit ? offset ?", paras)
+        assets = list()
+        for row in rows:
+            assets.append(MyAssetsDto(pid=row[0], code=row[1], user_id=row[2], user_name=row[3], name=row[4],
+                                    memo=row[5], status=row[6], create_time=row[7]).to_dict())
+        return assets
+
+    def insert_myassets(self, _user, _assets):
+        para = (None,_assets.code, _user.id, _user.name , _assets.name, _assets.memo, 0, time.time())
+        self.insert_one("insert into my_assets values(?,?,?,?,?,?,?,?)", para, False)
+        self.log(_user.id,OpType.系统.value,_assets.name,'添加'+_assets.user_name+'的物品code:' + _assets.code + " 名称:"+_assets.name + ' ' + _user.name +' 来管理', True)
+        return MyAssetsDto(para).to_dict()
+
     def insert_assets(self, code, user_id=None, user_name=None, assets_name=None, assets_memo=None, image=None, is_commit=False):
         if isinstance(code, AssetsDto):
             a = code
@@ -357,11 +454,11 @@ class DBMng(object):
         return None
 
     def get_note_by_id(self, pid):
-        row = self.get_one('''select id, assets_code, src_user_id, dst_user_id, witness_id,
+        row = self.get_one('''select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id,
                             log, borrow_time from note where id = ?''', (pid,))
         if row:
-            return NoteDto(pid=row[0], assets_code=row[1], src_user_id=row[2], dst_user_id=row[3],
-                           witness_id=row[4], log=row[5], borrow_time=row[6])
+            return NoteDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
+                           witness_id=row[5], log=row[6], borrow_time=row[7])
 
     def get_note_by_login_name(self, login_name, limit=20, offset=0):
         notes = list()
@@ -370,19 +467,19 @@ class DBMng(object):
         if _user:
             paras = (_user.id, limit, offset,)
             rows = self.get_all(
-                "select id, assets_code, src_user_id, dst_user_id, witness_id, log, borrow_time from note where dst_user_id = ? order by id desc limit ? offset ?",
+                "select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id, log, borrow_time from note where dst_user_id = ? order by id desc limit ? offset ?",
                 paras)
             for row in rows:
-                notes.append(NoteDto(pid=row[0], assets_code=row[1], src_user_id=row[2], dst_user_id=row[3],
-                           witness_id=row[4], log=row[5], borrow_time=row[6]).to_dict())
+                notes.append(NoteDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
+                           witness_id=row[5], log=row[6], borrow_time=row[7]).to_dict())
         return notes
 
     def get_note_by_assets_code(self, code):
-        row = self.get_one('''select id, assets_code, src_user_id, dst_user_id, witness_id,
+        row = self.get_one('''select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id,
                             log, borrow_time from note where assets_code = ?''', (code,))
         if row:
-            return NoteDto(pid=row[0], assets_code=row[1], src_user_id=row[2], dst_user_id=row[3],
-                           witness_id=row[4], log=row[5], borrow_time=row[6])
+            return NoteDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
+                           witness_id=row[5], log=row[6], borrow_time=row[7])
 
     def get_note_his_by_login_name(self, login_name, limit=20, offset=0):
         his = list()
@@ -390,15 +487,15 @@ class DBMng(object):
         if _user:
             paras = (_user.id, limit, offset,)
             rows = self.get_all(
-                "select id, assets_code, src_user_id, dst_user_id, witness_id, src_login_name, "
+                "select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id, src_login_name, "
                 "src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time "
                 "from note_his where dst_user_id = ? order by id desc limit ? offset ?",
                 paras)
             for row in rows:
-                his.append(NoteHisDto(pid=row[0], assets_code=row[1], src_user_id=row[2], dst_user_id=row[3],
-                 witness_id=row[4],  src_login_name=row[5], src_name=row[6], src_memo=row[7],
-                 dst_login_name=row[8], dst_name=row[9], dst_memo=row[10],
-                 log=row[11], borrow_time=row[12], reback_time=row[13]).to_dict())
+                his.append(NoteHisDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
+                 witness_id=row[5], src_login_name=row[6], src_name=row[7], src_memo=row[8],
+                 dst_login_name=row[9], dst_name=row[10], dst_memo=row[11],
+                 log=row[12], borrow_time=row[13], reback_time=row[14]).to_dict())
         return his
 
     def get_witness_by_id(self, witnesss_id):
@@ -450,19 +547,19 @@ class DBMng(object):
         if is_commit:
             self.commit()
 
-    def insert_note(self, assets_code, src_user_id, dst_user_id,
+    def insert_note(self, assets_code, assets_name, src_user_id, dst_user_id,
                     witness_id, log, borrow_time, is_commit=False):
-        para = (None, assets_code, src_user_id, dst_user_id, witness_id, log, borrow_time,)
-        self.insert_one("insert into note values(?,?,?,?,?,?,?)",
+        para = (None, assets_code, assets_name, src_user_id, dst_user_id, witness_id, log, borrow_time,)
+        self.insert_one("insert into note values(?,?,?,?,?,?,?,?)",
                         para, is_commit)
         return NoteDto(para)
 
-    def insert_note_his(self, assets_code, src_user_id, dst_user_id,  witness_id,  src_login_name, src_name,
+    def insert_note_his(self, assets_code, assets_name, src_user_id, dst_user_id,  witness_id,  src_login_name, src_name,
                         src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time, is_commit=False):
-        para = (None, assets_code, src_user_id, dst_user_id,  witness_id,  src_login_name,
+        para = (None, assets_code, assets_name, src_user_id, dst_user_id,  witness_id,  src_login_name,
                          src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time,
                          reback_time,)
-        self.insert_one("insert into note_his values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        self.insert_one("insert into note_his values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         para, is_commit)
         return NoteHisDto(para)
 
@@ -477,6 +574,8 @@ class DBMng(object):
             _assets.user_name = user.name
             self.insert_assets(_assets)
             self.log(user.id, OpType.新建.value, _assets.name, '新建资产：%s(%s) 资产 %s' % (user.name, user.log_name, _assets.name))
+            self.commit()
+
         except BaseException:
             trace_id = tools.Utils.generate_id()
             e_str = '新建资产失败,跟踪号: %s' % trace_id
@@ -484,37 +583,55 @@ class DBMng(object):
         if e_str:
             raise CreateAssetsException(e_str)
 
+    def update_my_assets_status(self, code=None, status=None):
+        self.conn.execute("update my_assets set status = ? where code = ?", (status, code))
+
     def borrow_assets(self, user, assets):
         e_str = None
         content = '%s 借给 %s 的 %s(%s)。' % \
                   (assets.name, user.memo, user.name, user.log_name)
         log_str = '借出资产：%s 的 %s' % (assets.user_name, content)
         try:
-            self.insert_note(assets.code, assets.user_id, user.id, None, content, time.time())
+            self.insert_note(assets.code, assets.name, assets.user_id, user.id, None, content, time.time())
+            self.update_my_assets_status(1)
             self.log(user.id, OpType.借出.value, assets.name, log_str)
+            self.commit()
         except BaseException:
+            self.rollback()
             trace_id = tools.Utils.generate_id()
             e_str = '%s 失败,跟踪号: %s' % (log_str, trace_id)
             print(e_str + "\r\n" + traceback.format_exc())
         if e_str:
+            self.log(user.id, OpType.借出.value, assets.name, "程序运行失败："+ e_str, True)
             raise BorrowAssetsException(e_str)
 
     def reback_assets(self, user, assets, note):
         e_str = None
+
         try:
-            src_user = self.get_user_by_id(note.src_user_id)
-            dst_user = self.get_user_by_id(note.dst_user_id)
-            content = '%s 归还了 %s 借的 %s 的 %s' % (user.name, dst_user.name, src_user.name, assets.name)
-            self.insert_note_his(note.assets_code, src_user.id, dst_user.id, note.witness_id, src_user.log_name,
-                                 src_user.name, src_user.memo, dst_user.log_name, dst_user.name,
-                                 dst_user.memo, note.log, note.borrow_time, time.time())
-            self.del_note_by_id(note.id)
-            self.log(user.id, OpType.归还.value, assets.name, content)
+            _row = self.get_one("select id from my_assets where  code = ? and user_id = ? ", (assets.code, user.id,))
+            if not _row:
+                e_str = assets.name + ' 不由你管理，不能完成归还动作'
+            else:
+                src_user = self.get_user_by_id(note.src_user_id)
+                dst_user = self.get_user_by_id(note.dst_user_id)
+                content = '%s 归还了 %s 借的 %s 的 %s' % (user.name, dst_user.name, src_user.name, assets.name)
+                log_str = '归还资产：%s 的 %s' % (assets.user_name, assets.name)
+
+                self.insert_note_his(note.assets_code, note.assets_name, src_user.id, dst_user.id, note.witness_id, src_user.log_name,
+                                     src_user.name, src_user.memo, dst_user.log_name, dst_user.name,
+                                     dst_user.memo, note.log, note.borrow_time, time.time())
+                self.del_note_by_id(note.id)
+                self.update_my_assets_status(2)
+                self.log(user.id, OpType.归还.value, assets.name, content)
+                self.commit()
         except BaseException:
+            self.rollback()
             trace_id = tools.Utils.generate_id()
             e_str = '归还资产失败,跟踪号: %s' % trace_id
             print(e_str + "\r\n" + traceback.format_exc())
         if e_str:
+            self.log(user.id, OpType.借出.value, assets.name, "程序运行失败：" + e_str, True)
             raise BorrowAssetsException(e_str)
 
     def do_biz(self, user, assets):
@@ -541,11 +658,7 @@ class DBMng(object):
                 # 3.1 借
                 self.borrow_assets(_user, _assets)
                 op_type = OpType.借出
-        self.commit()
         return op_type
-
-dbMng = DBMng('my_sqlite3.db')
-
 
 def create_table(conn, table_name, create_sql):
     Table_Name = table_name
@@ -577,7 +690,7 @@ def create_table(conn, table_name, create_sql):
         pass
 
 
-db_name = 'my_sqlite3.db'
+
 # INTEGER 能够自增长,INT不能够
 # USER 用户信息表
 # ASSETS 资产信息表
@@ -613,6 +726,21 @@ tables = {
                ('A0002', 3, '小东子', '饭卡2', '加班用', bytearray(b'image of A0002'),time.time()),
                ('A0003', 3, '小东子', '饭卡3', '招待用', bytearray(b'image of A0002'), time.time()),]],
 
+    "MY_ASSETS":['''CREATE TABLE MY_ASSETS (
+                ID INTEGER PRIMARY KEY, 
+                CODE VARCHAR(40),
+                USER_ID INT,
+                USER_NAME VARCHAR(40), 
+                NAME VARCHAR(40) NOT NULL,
+                MEMO TEXT(500),
+                STATUS INT,  --enum,  0 此物品未借出 1 此物品已借出 2 此物品已归还
+                CREATE_TIME TIMESTAMP,
+                FOREIGN KEY(USER_ID) REFERENCES USER(ID))''',
+                "insert into MY_ASSETS values(?,?,?,?,?,?,?,?)",
+              [(None,'A0001', 2, '小李子', '饭卡1', '加班用', 0, time.time()),
+               (None,'A0002', 3, '小东子', '饭卡2', '加班用', 1, time.time()),
+               (None,'A0003', 3, '小东子', '饭卡3', '招待用', 2, time.time()),]],
+
     "LOG":['''CREATE TABLE LOG (
                 ID INTEGER PRIMARY KEY, 
                 USER_ID INT, 
@@ -620,14 +748,15 @@ tables = {
                 ASSETS_NAME VARCHAR(40),
                 LOG TEXT(200),
                 LOG_TIME TIMESTAMP)''',
-                "insert into log values(?,?,?,?,?)",
-                [(None, 3, OpType.借出, '餐卡','小李子借给小东子餐卡', time.time()),
-                 (None, 2, OpType.借出, '餐卡','小东子借给小李子餐卡', time.time()),]],
+                "insert into LOG values(?,?,?,?,?,?)",
+                [(None, 3, OpType.借出.value, '餐卡','小李子借给小东子餐卡', time.time()),
+                 (None, 2, OpType.借出.value, '餐卡','小东子借给小李子餐卡', time.time()),]],
 
     "NOTE":['''
         CREATE TABLE NOTE (
             ID INTEGER PRIMARY KEY, 
             ASSETS_CODE VARCHAR(40),
+            ASSETS_NAME VARCHAR(40),
             SRC_USER_ID INT, 
             DST_USER_ID INT, 
             WITNESS_ID INT,
@@ -636,13 +765,14 @@ tables = {
             FOREIGN KEY(ASSETS_CODE) REFERENCES ASSETS(CODE),
             FOREIGN KEY(SRC_USER_ID) REFERENCES USER(ID),
             FOREIGN KEY(DST_USER_ID) REFERENCES USER(ID) )''',
-            "insert into note values(?,?,?,?,?,?,?)",
-            [(None, 'A0001',1,2, None, '1 to 2',time.time()),
-             (None, 'A0002',2,1, None, '2 to 1',time.time()),]
+            "insert into note values(?,?,?,?,?,?,?,?)",
+            [(None, 'A0001','饭卡1',1,2, None, '1 to 2',time.time()),
+             (None, 'A0002','饭卡2',2,1, None, '2 to 1',time.time()),]
         ],
     "NOTE_HIS": ['''CREATE TABLE NOTE_HIS (
             ID INTEGER PRIMARY KEY,
             ASSETS_CODE VARCHAR(40),
+            ASSETS_NAME VARCHAR(40),
             SRC_USER_ID INT,
             DST_USER_ID INT,
             WITNESS_ID INT,
@@ -657,8 +787,8 @@ tables = {
             REBACK_TIME TIMESTAMP,
             FOREIGN KEY(ASSETS_CODE) REFERENCES ASSETS(CODE) )
         ''',
-            "insert into note_his values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            [(None, 'A0001',1, 2, None, '13517227956', '小李子','建设银行/金融科技/武汉事业群/技术服务/前端开发'
+            "insert into note_his values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [(None, 'A0001','饭卡1',1, 2, None, '13517227956', '小李子','建设银行/金融科技/武汉事业群/技术服务/前端开发'
                 ,'18995533521','小东子','建设银行/金融科技/武汉事业群/技术服务/后端开发','记录其他一些个信息',time.time() - 24*60*60 ,time.time()),]
         ],
 
@@ -680,26 +810,32 @@ tables = {
         ]
 
     }
-
+import os
+db_name = 'my_sqlite3.db'
+db_filepath = os.path.realpath(db_name)
+print(db_filepath)
 
 def pre_db():
     import os
     import shutil
     import decimal
-    if os.path.isfile(db_name):
+    if os.path.isfile(db_filepath):
         # 先备份,再删除
-        shutil.copyfile(db_name, db_name+str(decimal.Decimal(time.time()*10000000))+'.bak')
-        # os.remove(db_name)
+        shutil.copyfile(db_filepath, db_filepath+str(decimal.Decimal(time.time()*10000000))+'.bak')
+        os.remove(db_name)
         pass
-    with sqlite3.connect(database=db_name) as conn:
+    with sqlite3.connect(database=db_filepath) as conn:
         for table_name in tables:
             try:
                 create_table(conn, table_name, tables[table_name][0])
                 cur = conn.cursor()
+                print(tables[table_name][1])
+                print(tables[table_name][2])
                 cur.executemany(tables[table_name][1], tables[table_name][2])
                 cur.close()
                 conn.commit()
             except Exception:
+                conn.rollback()
                 print(table_name, traceback.format_exc())
 
 
@@ -718,6 +854,26 @@ def show_db():
                 rows = cur.fetchone()
 
 # show_db()
+
+def test_db():
+    with sqlite3.connect(database=db_name) as conn:
+        cur = conn.cursor()
+        id = '1 or 1 = 1'
+        type = 0
+        args = (id, type)
+        cur.execute("select * from USER where id = ? and status = ?", args)
+        print('-' * 15, 'USER', '-' * 15)
+        rows = cur.fetchone()
+        while rows:
+            # for row in rows:
+            #     if type(row) == bytes:
+            #         print(row.decode('UTF-8'))
+            print(rows)
+            rows = cur.fetchone()
+
+# test_db()
+
+
 if __name__ == '__main__':
     pre_db()
     # show_db()
@@ -735,7 +891,7 @@ if __name__ == '__main__':
     system_user_id = 0  # 需要去数据库查询
     req_user = UserDto(None, '18995533528', '西施', 0, 'ccb/bianwai')
     req_assets = AssetsDto('A0004',None, None, 'Python程序员之美','一本介绍美女程序员的书',
-                           b'pic stream of book',time.time())
+                           b'pic stream of book', time.time())
     try:
         # 验证1.1 用户不存在
         req_user.log_name = 'test_user_no_exit'
@@ -767,3 +923,4 @@ if __name__ == '__main__':
     show_db()
 
 
+dbMng = DBMng(db_filepath)

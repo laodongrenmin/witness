@@ -6,7 +6,7 @@ from web.DBMng import dbMng
 
 __author__ = 'laodongrenmin'
 __version__ = '0.0.0.1'
-__date__ = '2019/7/24 07:51'
+__date__ = '2019/11/19 16:28'
 
 
 def do(req):
@@ -19,16 +19,7 @@ def do_post(req: HttpRequest):
     body = dict()
     body['status'] = 1
     if isinstance(req, HttpRequest):
-        # print('[%d] dbMng id:%d' % (os.getpid(), id(dbMng)))
-        # Resource interpreted as Document but transferred with MIME type application/json
-        # req.res_head['Content-Type'] = 'application/json; charset=UTF-8'
-
         req.res_head['Content-Type'] = 'text/html; charset=UTF-8'
-
-        # str_body = '''
-        #        <!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><title>资产列表页面</title></head><body><table>%s</table></body></html>
-        #        '''
-
         # 从Ｓｅｓｓｉｏｎ里面取出用户ＩＤ
         # user_id = int(req.parameters.get('user_id','2'))
         login_name = req.parameters.get('userInfo.login_name', '')
@@ -36,7 +27,7 @@ def do_post(req: HttpRequest):
         if _user:
             limit = int(req.parameters.get('limit', '1000'))
             offset = int(req.parameters.get('offset', '0'))
-            body['assets'] = dbMng.get_assets_by_user_id(_user.id, limit, offset)
+            body['assets'] = dbMng.get_myassets_by_user_id(_user.id, limit, offset)
             body['status'] = 0
             body['message'] = 'query success'
         else:
