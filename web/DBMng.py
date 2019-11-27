@@ -212,7 +212,7 @@ class NoteHisDto(object):
         d['src_login_name'] = self.src_login_name
         d['src_name'] = self.src_name
         d['src_memo'] = self.src_memo
-        d['dst_login_name '] = self.dst_login_name
+        d['dst_login_name'] = self.dst_login_name
         d['dst_name'] = self.dst_name
         d['dst_memo'] = self.dst_memo
         d['log'] = self.log
@@ -328,8 +328,25 @@ class DBMng(object):
     def get_my_borrow(self, user_login_name, limit=1000, offset=0):
         return self.get_note_by_login_name(user_login_name, limit, offset)
 
+    def get_borrow_by_code(self, code=None):
+        noteDto = self.get_note_by_assets_code(code)
+        his = list()
+        if noteDto:
+            _src_user = self.get_user_by_id(noteDto.src_user_id)
+            _dst_user = self.get_user_by_id(noteDto.dst_user_id)
+            if _src_user and _dst_user:
+                his.append(NoteHisDto(pid=None, assets_code=noteDto.assets_code, assets_name=noteDto.assets_name,
+                                      src_user_id=noteDto.src_user_id, dst_user_id=noteDto.dst_user_id,
+                                      witness_id=None, src_login_name=_src_user.log_name, src_name=_src_user.name,
+                                      src_memo=_src_user.memo, dst_login_name=_dst_user.log_name, dst_name=_dst_user.name,
+                                      dst_memo=_dst_user.memo, log=noteDto.log, borrow_time=noteDto.borrow_time, reback_time=None).to_dict())
+        return his
+
     def get_my_reback(self, user_login_name, limit=1000, offset=0):
         return self.get_note_his_by_login_name(user_login_name, limit, offset)
+
+    def get_reback_by_code(self, assets_code, limit=1000, offset=0):
+        return self.get_note_his_by_assets_code(assets_code, limit, offset)
 
     def get_my_log(self, user_login_name, limit=1000, offset=0, op_type=None):
         logs = list()
@@ -480,6 +497,7 @@ class DBMng(object):
         if row:
             return NoteDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
                            witness_id=row[5], log=row[6], borrow_time=row[7])
+        return None
 
     def get_note_his_by_login_name(self, login_name, limit=20, offset=0):
         his = list()
@@ -496,6 +514,21 @@ class DBMng(object):
                  witness_id=row[5], src_login_name=row[6], src_name=row[7], src_memo=row[8],
                  dst_login_name=row[9], dst_name=row[10], dst_memo=row[11],
                  log=row[12], borrow_time=row[13], reback_time=row[14]).to_dict())
+        return his
+
+    def get_note_his_by_assets_code(self, code, limit=20, offset=0):
+        his = list()
+        paras = (code, limit, offset,)
+        rows = self.get_all(
+            "select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id, src_login_name, "
+            "src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time "
+            "from note_his where assets_code = ? order by id desc limit ? offset ?",
+            paras)
+        for row in rows:
+            his.append(NoteHisDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
+             witness_id=row[5], src_login_name=row[6], src_name=row[7], src_memo=row[8],
+             dst_login_name=row[9], dst_name=row[10], dst_memo=row[11],
+             log=row[12], borrow_time=row[13], reback_time=row[14]).to_dict())
         return his
 
     def get_witness_by_id(self, witnesss_id):
@@ -593,7 +626,7 @@ class DBMng(object):
         log_str = '借出资产：%s 的 %s' % (assets.user_name, content)
         try:
             self.insert_note(assets.code, assets.name, assets.user_id, user.id, None, content, time.time())
-            self.update_my_assets_status(1)
+            self.update_my_assets_status(assets.code, 1)
             self.log(user.id, OpType.借出.value, assets.name, log_str)
             self.commit()
         except BaseException:
@@ -622,7 +655,7 @@ class DBMng(object):
                                      src_user.name, src_user.memo, dst_user.log_name, dst_user.name,
                                      dst_user.memo, note.log, note.borrow_time, time.time())
                 self.del_note_by_id(note.id)
-                self.update_my_assets_status(2)
+                self.update_my_assets_status(assets.code, 2)
                 self.log(user.id, OpType.归还.value, assets.name, content)
                 self.commit()
         except BaseException:
