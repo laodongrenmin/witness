@@ -2,7 +2,9 @@
 # -*- coding: UTF-8 -*-
 import json
 from HttpRequest import HttpRequest, ResponseCode, AttachFile
-from web.DBMng import dbMng, AssetsDto, UserDto
+# from web.DBMng import dbMng, AssetsDto, UserDto
+from web.biz.assets import AssetsImpl
+
 
 __author__ = 'laodongrenmin'
 __version__ = '0.0.0.1'
@@ -19,17 +21,15 @@ def do_post(req: HttpRequest):
         # code, user_id, user_name, name, memo, image, create_time
         paras = req.parameters
         code = paras.get('code', None)
+        reason = paras.get('reason', None)
         login_name = paras['userInfo'].get('login_name', None)
         name = paras['userInfo'].get('name', None)
         memo = paras['userInfo'].get('dept_name', '建信金科/武汉事业群')
-        # print('dbMng id:%d' % id(dbMng))
+        mobile = paras['userInfo'].get('mobile', None)
         if code:
-            _assets = dbMng.get_assets_bycode(code=code)
+            assets_impl = AssetsImpl()
+            _assets, op_type = assets_impl.do_biz(code=code, login_name=login_name, name=name, memo=memo, mobile=mobile)
             if _assets:
-                _user = UserDto(None, login_name,
-                                name, 0, memo)
-                _assets_tmp = AssetsDto(code=code)
-                op_type = dbMng.do_biz(_user, _assets_tmp)
                 if op_type:
                     body['status'] = 0
                     body['op_type'] = op_type.name
@@ -57,16 +57,15 @@ def do_get(req: HttpRequest):
     if isinstance(req, HttpRequest):
         if action == 'get_image':
             if code:
-                _assets = dbMng.get_assets_bycode(code=code)
-                if _assets and _assets.image:
-                    head, content = _assets.image.split(b'\r\n\r\n', 2)
-                    file = AttachFile(head.decode('utf-8'), content)
-                    req.res_head['Content-Type'] = file.content_type
-                    req.res_body = file.content
+                assets_impl = AssetsImpl()
+                content_type, content = assets_impl.get_image(code=code)
+                if content_type and content:
+                    req.res_head['Content-Type'] = content_type
+                    req.res_body = content
                 else:
                     req.res_command = ResponseCode.NOT_FOUND
                     req.res_head['Content-Type'] = 'text/html; charset=utf-8'
-                    req.res_body = "没有图像记录".encode('utf-8')
+                    req.res_body = "没有图像记录或者图像类型".encode('utf-8')
             else:
                 req.res_command = ResponseCode.BAD_REQUEST
                 req.res_head['Content-Type'] = 'text/html; charset=utf-8'

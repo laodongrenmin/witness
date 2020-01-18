@@ -49,6 +49,10 @@
             call_remote("/wtn/my_assets_add")
         }
 
+        function add_user() {
+            call_remote("/wtn/user_add")
+        }
+
         function call_remote(req_url) {
             my_data =  $("#content").val();
             // alert(my_data);
@@ -89,6 +93,7 @@
 </form>
 
 <button name="借还" value="借还" onclick="javascript: assets()">借还资产</button>  &nbsp;&nbsp;|&nbsp;&nbsp;
+<button name="添加用户" value="添加用户" onclick="javascript: add_user()">添加用户</button>
 <button name="添加资产" value="添加资产" onclick="javascript: add_assets()">添加资产</button>
 <button name="添加我的物品" value="添加我的物品" onclick="javascript: add_my_assets()">添加我的物品</button> &nbsp;&nbsp;|&nbsp;&nbsp;
 

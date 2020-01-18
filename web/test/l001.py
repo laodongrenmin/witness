@@ -11,6 +11,7 @@ from web.biz.log import g_logImpl
 from web.dao.db import g_db
 import web.dto as dto
 import web.dao as dao
+import time
 
 class Dao(object):
     def insert_log(self, user_id=None, op_type=None, assets_code=None, assets_name=None,
@@ -18,18 +19,12 @@ class Dao(object):
         print('hehehe',user_id, op_type, assets_name, assets_code, log, is_commit)
 
 if __name__ == '__main__':
-    db_file_path = "test_sqlite3.db"
-    g_db.init_conn_by_name(db_file_path)
 
-    g_logImpl.log(0, 1, '111', 'name', 'test', True, True)
-    my_dao = Dao()
-    g_logImpl.set_dao(my_dao)
-    g_logImpl.log(1, 1, '111', 'name', 'test', True, False)
-    g_logImpl.set_dao(dao)
-    g_logImpl.log(1, 1, '111', 'name', 'test', True, True)
+    a = dto.AssetsDto('code',1,'admin','book','type1','ccbft',None,time.time())
 
-    logDto = dto.LogDto(pid=0, user_id=1)
-    print(logDto.user_id)
+    b = a.to_html_dict()
+
+    print(b)
 
     principal = 10000
     year = 35

@@ -43,15 +43,19 @@ def do_post(req: HttpRequest):
                 body['message'] = '已经存在相同编码的资产，请重新编码'
             else:
                 _user = dbMng.get_user_by_logname(login_name)
-                _assets = AssetsDto(code=code, user_id=_user.id, user_name=_user.name, name=name, memo=memo, image=image)
-                dbMng.do_biz(_user, _assets)
-                _assets = dbMng.get_assets_bycode(code)
-                if _assets:
-                    body['message'] = '已经成功添加资产到资产库'
-                    body['status'] = 0
-                    body['assets'] = _assets.to_dict()
+                if not _user:
+                    body['message'] = '用户' + login_name + '不存在。'
+                    body['status'] = 9999
                 else:
-                    body['message'] = '出现未知错误'
+                    _assets = AssetsDto(code=code, user_id=_user.id, user_name=_user.name, name=name, memo=memo, image=image)
+                    dbMng.do_biz(_user, _assets)
+                    _assets = dbMng.get_assets_bycode(code)
+                    if _assets:
+                        body['message'] = '已经成功添加资产到资产库'
+                        body['status'] = 0
+                        body['assets'] = _assets.to_dict()
+                    else:
+                        body['message'] = '出现未知错误'
         else:
             body["message"] = "没有上送资产编码 或者 没有登陆认证获取不到用户信息"
         req.res_body = json.dumps(body, ensure_ascii=False).encode('UTF-8')

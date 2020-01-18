@@ -9,12 +9,11 @@
 =================================================="""
 import web.dao as dao
 import web.dto as dto
-from HttpRequest import AttachFile
+from request import AttachFile
 from web.biz.constant import Const
 from web.biz.log import g_logImpl
 from web.biz.myexception import *
 import traceback
-import time
 
 
 class AssetsImpl(object):
@@ -48,9 +47,13 @@ class AssetsImpl(object):
                            log='新建用户: %s(%s)' % (u.name, u.login_name), is_commit=True)
         return ret_user
 
+    def get_assets_by_code(self, code=None):
+        return self._dao.get_assets_by_code(code=code)
+
     def create_assets(self, _user: dto.UserDto=None, _assets: dto.AssetsDto=None, trace_id=None):
         e_str = None
         ret_assets = None
+        status = Const.OpStatus.失败
         try:
             if _assets.code and _assets.name:  # 传入了代码和名称，我们可以新建物品
                 ret_assets = self._dao.insert_assets(_assets=_assets)
@@ -59,6 +62,7 @@ class AssetsImpl(object):
                 self._dao.insert_my_assets(_user=_user, _assets=_assets)
                 g_logImpl.log(user_id=_user.id, op_type=Const.OpType.新建.value, assets_code=_assets.code,
                               assets_name=_assets.name, log=message, is_commit=True, is_print=False)
+                status = Const.OpStatus.成功
             else:
                 message = "添加资产,代码和名称是必须的，代码为: %s 名称为：%s" % (_assets.code, _assets.name)
                 g_logImpl.log(user_id=_user.id, op_type=Const.OpType.新建.value, assets_code=_assets.code,
@@ -70,45 +74,46 @@ class AssetsImpl(object):
             print(e_str + "\r\n" + tb)
         if e_str:
             raise CreateAssetsException(e_str)
-        return ret_assets, message
+        return status, ret_assets, message
 
     def borrow_assets(self, _user: dto.UserDto=None, _assets: dto.AssetsDto=None, reason=None, trace_id=None):
         e_str = None
-        content = '%s 借给 %s 的 %s(%s)。' % \
-                  (_assets.name, _user.memo, _user.name, _user.mobile)
-        log_str = '借出资产：%s 的 %s' % (_assets.user_name, content)
+        message = '%s 的 %s 借给 %s 的 %s(%s)。' % \
+                  (_assets.user_name, _assets.name, _user.memo, _user.name, _user.mobile)
         try:
             self._dao.insert_note(assets_code=_assets.code, assets_name=_assets.name, src_user_id=_assets.user_id,
-                                  dst_user_id=_user.id, reason=reason, _log=content)
+                                  dst_user_id=_user.id, reason=reason, _log=message)
             self._dao.update_my_assets_status(_assets.code, 1)
             g_logImpl.log(user_id=_user.id, op_type=Const.OpType.借出.value, assets_code=_assets.code,
-                          assets_name=_assets.name, log=log_str, is_commit=True, is_print=False)
+                          assets_name=_assets.name, log=message, is_commit=True, is_print=False)
         except BaseException:
             tb = traceback.format_exc()
             self._dao.rollback()
-            e_str = '%s 失败,跟踪号: %s' % (log_str, trace_id)
+            e_str = '%s 失败,跟踪号: %s' % (message, trace_id)
             print(e_str + "\r\n" + tb)
         if e_str:
             raise BorrowAssetsException(e_str)
-        return log_str
+        return Const.OpStatus.成功, message
 
     def return_assets(self, _user, _assets, _note, trace_id):
         e_str = None
+        status = Const.OpStatus.失败
         try:
             _row = self._dao.get_my_assets(assets_code=_assets.code, user_id=_user.id)
             if not _row:
-                e_str = "资产: %s 不由你管理，不能完成归还动作" % _assets.name
+                message = "资产: %s 不由你管理，不能完成归还动作" % _assets.name
             else:
                 src_user = self._dao.get_user_by_id(_note.src_user_id)
                 dst_user = self._dao.get_user_by_id(_note.dst_user_id)
-                content = '管理员:%s 归还了 %s 借的 %s 的 %s' % (_user.name, dst_user.name, src_user.name, _assets.name)
+                message = '管理员:%s 归还了 %s 借的 %s 的 %s' % (_user.name, dst_user.name, src_user.name, _assets.name)
 
                 self._dao.insert_note_his(_assets=_assets, mng_user=_user,
-                                          src_user=src_user, dst_user=dst_user, _note=_note, log=content)
+                                          src_user=src_user, dst_user=dst_user, _note=_note, log=message)
                 self._dao.del_note_by_id(_note.id)
                 self._dao.update_my_assets_status(_assets.code, 2)
                 g_logImpl.log(user_id=_user.id, op_type=Const.OpType.归还.value, assets_code=_assets.code,
-                              assets_name=_assets.name, log=content, is_commit=True, is_print=False)
+                              assets_name=_assets.name, log=message, is_commit=True, is_print=False)
+                status = Const.OpStatus.成功
         except BaseException:
             tb = traceback.format_exc()
             self._dao.rollback()
@@ -116,7 +121,7 @@ class AssetsImpl(object):
             print(e_str + "\r\n" + tb)
         if e_str:
             raise ReturnAssetsException(e_str)
-        return content
+        return status, message
 
     def do_biz(self, assets_code=None, assets_name=None, assets_category=None, assets_memo=None, assets_image=None,
                assets_reason=None, login_name=None, name=None, memo=None, mobile=None,
@@ -138,7 +143,6 @@ class AssetsImpl(object):
         :param _user:
         :return: 操作的资产对象， 操作的动作
         """
-        message = None
         if not _user:
             _user = dto.UserDto(None, login_name=login_name, name=name, status=0, memo=memo, mobile=mobile)
         _user = self.get_or_create_user(_user)
@@ -151,13 +155,13 @@ class AssetsImpl(object):
             # 查找登记簿，如果有，就是还书。没有就是借书
             _note = dao.get_note_by_assets_code(_assets.code)
             if _note:
-                op_type = Const.OpType.归还.value
-                message = self.return_assets(_user=_user, _assets=_assets, _note=_note, trace_id=trace_id)
+                op_type = Const.OpType.归还
+                status, message = self.return_assets(_user=_user, _assets=_assets, _note=_note, trace_id=trace_id)
             else:
-                op_type = Const.OpType.借出.value
-                message = self.borrow_assets(_user=_user, _assets=_assets, reason=assets_reason, trace_id=trace_id)
+                op_type = Const.OpType.借出
+                status, message = self.borrow_assets(_user=_user, _assets=_assets, reason=assets_reason, trace_id=trace_id)
         else:
-            op_type = Const.OpType.新建.value
-            _assets, message = self.create_assets(_user=_user, _assets=_assets, trace_id=trace_id)
-        return _assets, op_type, message
+            op_type = Const.OpType.新建
+            status, _assets, message = self.create_assets(_user=_user, _assets=_assets, trace_id=trace_id)
+        return status, _assets, op_type, message
 

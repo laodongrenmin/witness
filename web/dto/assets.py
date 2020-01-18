@@ -8,6 +8,8 @@
 @Desc   ：
 =================================================="""
 import time
+import base64
+from web.conf import Conf
 
 
 class AssetsDto(object):
@@ -36,6 +38,14 @@ class AssetsDto(object):
         d['name'] = self.name
         d['category'] = self.category
         d['memo'] = self.memo
-        d['image'] = '/wtn/assets?action=get_image&code=' + self.code  # 给出访问图像的地址
+        d['image'] = '%s/assets?action=get_image&code=%s' % (Conf.root_url, self.code)   # 给出访问图像的地址
         d['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.create_time))
+        return d
+
+    def to_html_dict(self):
+        d = self.to_dict()
+        if self.image:
+            d['image'] = str(base64.b64encode(self.image))
+        else:
+            d['image'] = None
         return d

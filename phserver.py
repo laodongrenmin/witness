@@ -1,4 +1,12 @@
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+"""=================================================
+@Project -> File   ：PycharmProjects -> phserver
+@IDE    ：PyCharm
+@Author ：Mr. toiler
+@Date   ：1/18/2020 11:02 AM
+@Desc   ：
+=================================================="""
 import socket
 import multiprocessing
 import time
@@ -7,8 +15,8 @@ from queue import Empty
 import signal
 import traceback
 
-from HttpRequest import HttpRequest
-from HttpRequest import ResponseCode
+from request import HttpRequest
+from request import ResponseCode
 from tools import utils
 
 import types
@@ -16,20 +24,24 @@ import sqlite3
 import selectors
 import json
 
-__author__ = 'laodongrenmin'
+__author__ = 'toiler'
+__email__ = 'zhengbangdong.zh@ccbft.com'
 __version__ = '0.0.0.1'
-__server__ = 'HFServer'
+__server__ = 'PHServer'
+__date__ = '1/18/2020 11:02 AM'
 
 if __name__ == '__main__':
     from optparse import OptionParser
     cmd_parser = OptionParser(usage="usage: %prog [options] package.module:app")
     _opt = cmd_parser.add_option
-    _opt("-v","--version", action="store_true", help="show version number.")
+    _opt("-v", "--version", action="store_true", help="show version number.")
     _opt("--debug", action="store_true", help="start server in debug mode.")
     _opt("--reload", action="store_true", help="auto-reload on file changes.")
     _opt("--shutdown", action="store_true", help="shutdown this server.")
-    _opt("-p","--port", action="store", type='int', dest='port', default='8010', help="server listen port, default 8010.")
-    _opt("-b", "--bind", action="store", type='string', dest="host", default='0.0.0.0', help="bind socket to ADDRESS.default 0.0.0.0 ")
+    _opt("-p","--port", action="store", type='int', dest='port', default='8010',
+         help="server listen port, default 8010.")
+    _opt("-b", "--bind", action="store", type='string', dest="host", default='0.0.0.0',
+         help="bind socket to ADDRESS.default 0.0.0.0 ")
     _opt("--process", action="store", type='int', dest='process', default='5',
          help="server process number, default 5.")
     _opt("--queue", action="store", type='int', dest='queue', default='50',
@@ -37,7 +49,7 @@ if __name__ == '__main__':
     cmd_options, cmd_args = cmd_parser.parse_args()
 
 
-class ProcessPool():
+class ProcessPool(object):
     def __init__(self, process_number, queue_maxsize):
         self.process_number = process_number
         self.work_queue = multiprocessing.Queue(maxsize=queue_maxsize)
@@ -96,12 +108,13 @@ def tcp_link(sock, addr, alive_sock_queue, conn):
             return
         exception_trace_id = utils.generate_id()
         exception_message = str(e)
-        print('[%d] tcp_link TraceId:%s %s %s' % (os.getpid(), exception_trace_id, exception_message, traceback.format_exc()))
+        print('[%d] tcp_link TraceId:%s %s %s' %
+              (os.getpid(), exception_trace_id, exception_message, traceback.format_exc()))
     except BaseException as be:
         exception_trace_id = utils.generate_id()
         exception_message = str(be)
-        print('[%d] tcp_link TraceId:%s %s %s' % (
-        os.getpid(), exception_trace_id, exception_message, traceback.format_exc()))
+        print('[%d] tcp_link TraceId:%s %s %s' %
+              (os.getpid(), exception_trace_id, exception_message, traceback.format_exc()))
 
     if exception_trace_id:
         req.res_command = ResponseCode.INNER_ERROR
@@ -146,6 +159,7 @@ class Server(object):
         self.queue_number = queue_number
         self.pool = ProcessPool(self.process_number, self.queue_number)
         self.sel = selectors.DefaultSelector()
+        self.pid_file = os.path.split(os.path.realpath(sys.argv[0]))[0] + "/pid_file.lock"  # 获取运行路径
 
     def accept_wrapper(self, listen_sock):
         sock, addr = listen_sock.accept()
@@ -170,9 +184,10 @@ class Server(object):
         print('listen in %s:%d' % (self.host, self.port))
 
         self.sel.register(s, selectors.EVENT_READ, data=None)
-
-        signal.signal(signal.SIGTERM, self._term_handler)  # SIGTERM 关闭程序信号
-        signal.signal(signal.SIGINT, self._term_handler)   # 接收ctrl+C 信号 (Ctrl+C -->SIGINT; Ctrl+\ -->SIGQUIT; Ctrl+Z -->SIGTSTP
+        # SIGTERM 关闭程序信号
+        signal.signal(signal.SIGTERM, self._term_handler)
+        # 接收ctrl+C 信号 (Ctrl+C -->SIGINT; Ctrl+\ -->SIGQUIT; Ctrl+Z -->SIGTSTP
+        signal.signal(signal.SIGINT, self._term_handler)
         self.record_pid()
         while not self.term_flag:
             try:
@@ -211,8 +226,7 @@ class Server(object):
 
     def record_pid(self):
         pid = str(os.getpid())
-        pidfile = os.path.split(os.path.realpath(sys.argv[0]))[0] + "/pidfile.lock"  # 获取运行路径
-        fd = open(pidfile, 'w+')
+        fd = open(self.pid_file, 'w+')
         fd.write("%s\n" % pid)
         fd.close()
 
@@ -220,11 +234,8 @@ class Server(object):
         """
         Stop the server
         """
-        pidfile = os.path.split(os.path.realpath(sys.argv[0]))[0] + "/pidfile.lock"  # 获取运行路径
-
-        # Get the pid from the pidfile
         try:
-            pf = open(pidfile, 'r')
+            pf = open(self.pid_file, 'r')
             pid = int(pf.read().strip())
             pf.close()
         except IOError:
@@ -232,7 +243,7 @@ class Server(object):
 
         if not pid:
             message = "file %s does not exist. Daemon not running?\n"
-            print(message % pidfile)
+            print(message % self.pid_file)
             return  # not an error in a restart
 
         # Try killing the main process
@@ -247,8 +258,8 @@ class Server(object):
         except OSError as err:
             err = str(err)
             if err.find("No such process") > 0:
-                if os.path.exists(pidfile):
-                    os.remove(pidfile)
+                if os.path.exists(self.pid_file):
+                    os.remove(self.pid_file)
             else:
                 print(err)
         except BaseException as be:
@@ -257,7 +268,7 @@ class Server(object):
 
 if __name__ == '__main__':
     if cmd_options.version:
-        print('Server %s\n'%__version__)
+        print('Server %s %s %s\n' % (__server__, __version__, __date__))
         exit(0)
 
     if cmd_options.shutdown:
@@ -266,3 +277,4 @@ if __name__ == '__main__':
 
     s = Server(host=cmd_options.host, port=cmd_options.port, process_number=cmd_options.process, queue_number=cmd_options.queue)
     s.run()
+

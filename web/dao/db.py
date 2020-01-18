@@ -8,6 +8,7 @@
 @Desc   ：
 =================================================='''
 import sqlite3
+from web.conf import Conf
 
 
 class DB(object):
@@ -15,7 +16,7 @@ class DB(object):
         """
         :param para:   str(filepath) or sqlite3.Connection
         """
-        self.IS_PRINT_SQL = True
+        self.IS_PRINT_SQL = Conf.is_print_sql
         self.conn = None
         self.db_name = None
         if isinstance(para, str):
