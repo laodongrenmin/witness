@@ -13,10 +13,10 @@ import os
 import sqlite3
 from web.dao.init_db import create_db, create_table
 from web.biz.assets import AssetsImpl
-import web.dto as dto
 import web.dao as dao
 import utils
 from web.biz.constant import Const
+from web.test import *
 
 
 def get_log(log_name):
@@ -29,9 +29,6 @@ def get_log(log_name):
 
 
 logger = get_log(__name__)
-
-
-db_file_path = "my_sqlite3_1.db"
 
 
 def pre_db():
@@ -68,12 +65,14 @@ def show_db():
 class AssetsImplTestCase(unittest.TestCase):
     me = AssetsImpl()
 
+    # 这里强制打印出执行的sql语句，运行时，会根据配置文件里面的是否打印sql语句参数
+    from web.dao.db import g_db
+    g_db.IS_PRINT_SQL = True
+
     def setUp(self):
-        self.userDto = dto.UserDto(login_name='login_name_0001', name='admin', status='0',
-                                   memo='ccb_ft', mobile='18999999999')
-        self.assetsDto = dto.AssetsDto(code='A8888', user_id=0, user_name='admin',
-                                       name='图书', category='类别一', memo='很牛的书', image=b'jpeg\r\n\r\njpeg_content')
-        self.assets_reason = 'overtime'
+        self.userDto = get_test_user_dto()
+        self.assetsDto = get_test_book_assets_dto()
+        self.assets_reason = get_borrow_reason()
 
     def test_00100_do_biz(self):
         # 1. 创建用户 以及 新建 不成功的资产 admin
@@ -150,9 +149,7 @@ class AssetsImplTestCase(unittest.TestCase):
         self.test_00400_do_biz()
 
     def test_99999_do_biz(self):
-        dao.close_db()
         show_db()
-        os.remove(db_file_path)
         self.assertEqual(1, 1)
 
     def do_biz(self):
@@ -166,10 +163,12 @@ class AssetsImplTestCase(unittest.TestCase):
                               trace_id=trace_id)
 
 
-if __name__ == '__main__':
-
+def execute_test():
     pre_db()
-
     unittest.main()
+
+
+if __name__ == '__main__':
+    execute_test()
 
 

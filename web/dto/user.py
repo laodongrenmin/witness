@@ -10,9 +10,9 @@
 
 
 class UserDto(object):
-    def __init__(self, pid=None, login_name=None, name=None, status=None, memo=None, mobile=None):
-        if isinstance(pid, UserDto):
-            pid, login_name, name, status, memo, mobile = pid.get_all_property()
+    def __init__(self, pid=None, login_name=None, name=None, status=None, memo=None, mobile=None, _user=None):
+        if _user and isinstance(_user, UserDto):
+            pid, login_name, name, status, memo, mobile = _user.get_all_property()
         elif isinstance(pid, tuple):
             pid, log_name, name, status, memo, mobile = pid
         self.id = pid

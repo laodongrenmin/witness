@@ -56,6 +56,8 @@ class AssetsImpl(object):
         status = Const.OpStatus.失败
         try:
             if _assets.code and _assets.name:  # 传入了代码和名称，我们可以新建物品
+                _assets.user_id = _user.id
+                _assets.user_name = _user.name
                 ret_assets = self._dao.insert_assets(_assets=_assets)
                 message = "%s(%s) 添加资产 %s(%s)-%s 并设置管理成功" % \
                           (_user.name, _user.login_name, _assets.name, _assets.code, _assets.category)
@@ -66,7 +68,7 @@ class AssetsImpl(object):
             else:
                 message = "添加资产,代码和名称是必须的，代码为: %s 名称为：%s" % (_assets.code, _assets.name)
                 g_logImpl.log(user_id=_user.id, op_type=Const.OpType.新建.value, assets_code=_assets.code,
-                              assets_name=_assets.name, log=message, is_commit=True, is_print=True)
+                              assets_name=_assets.name, log=message, is_commit=True, is_print=False)
         except BaseException as b:
             tb = traceback.format_exc()
             self._dao.rollback()

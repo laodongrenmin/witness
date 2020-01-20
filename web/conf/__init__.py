@@ -15,7 +15,7 @@ class Conf(object):
     root_url = '/wtn'
 
     # 是否打印执行的SQL
-    is_print_sql = True
+    is_print_sql = False
 
     # 路由，请求Url和处理模块的对应关系
     # 模块需要实现 do_post ， do_get 方法

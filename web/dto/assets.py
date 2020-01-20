@@ -13,9 +13,10 @@ from web.conf import Conf
 
 
 class AssetsDto(object):
-    def __init__(self, code=None, user_id=None, user_name=None, name=None, category=None, memo=None, image=None, create_time=None):
-        if isinstance(code, AssetsDto):
-            code, user_id, user_name, name, category, memo, image, create_time = code.get_all_property()
+    def __init__(self, code=None, user_id=None, user_name=None, name=None, category=None,
+                 memo=None, image=None, create_time=None, _assets=None):
+        if _assets and isinstance(_assets, AssetsDto):
+            code, user_id, user_name, name, category, memo, image, create_time = _assets.get_all_property()
         elif isinstance(code, tuple):
             code, user_id, user_name, name, category, memo, image, create_time = code
         self.code = code

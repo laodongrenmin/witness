@@ -20,6 +20,8 @@ class MyAssetsDao(object):
                 USER_NAME VARCHAR(40), 
                 NAME VARCHAR(40) NOT NULL,
                 MEMO TEXT(500),
+                DST_USER_NAME VARCHAR (40),   -- 借物品的人的名字，用于我的物品
+                DST_USER_MOBILE VARCHAR (40),
                 STATUS INT,  --enum,  0 此物品未借出 1 此物品已借出 2 此物品已归还
                 OP_TIME TIMESTAMP, 
                 CREATE_TIME TIMESTAMP,
