@@ -134,7 +134,7 @@ class LogDto(object):
         d['user_id'] = self.user_id
         d['op_type'] = self.op_type
         d['assets_name'] = self.assets_name
-        d['log'] = self.log
+        d['_log'] = self.log
         d['log_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.log_time))
         return d
 
@@ -166,7 +166,7 @@ class NoteDto(object):
         d['src_user_id'] = self.src_user_id
         d['dst_user_id'] = self.dst_user_id
         d['witness_id'] = self.witness_id
-        d['log'] = self.log
+        d['_log'] = self.log
         d['borrow_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.borrow_time))
         return d
 
@@ -215,7 +215,7 @@ class NoteHisDto(object):
         d['dst_login_name'] = self.dst_login_name
         d['dst_name'] = self.dst_name
         d['dst_memo'] = self.dst_memo
-        d['log'] = self.log
+        d['_log'] = self.log
         d['reback_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.reback_time))
         d['borrow_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.borrow_time))
         return d
@@ -314,7 +314,7 @@ class DBMng(object):
 
     def log(self, user_id, op_type, assets_name, log, is_commit=False):
         para = (None, user_id, op_type, assets_name, log, time.time(),)
-        self.insert_one('insert into log values(?,?,?,?,?,?)',
+        self.insert_one('insert into _log values(?,?,?,?,?,?)',
                         para, is_commit)
         return para
 
@@ -355,7 +355,7 @@ class DBMng(object):
         if op_type:
             op_type_sql = ' and op_type=' + op_type
         if _user:
-            sql = "select id, user_id, op_type, assets_name, log, log_time from log where user_id=? " + op_type_sql + " order by id desc limit ? offset ?"
+            sql = "select id, user_id, op_type, assets_name, _log, log_time from _log where user_id=? " + op_type_sql + " order by id desc limit ? offset ?"
             paras = (_user.id, limit, offset,)
             rows = self.get_all(sql, paras)
             for row in rows:
@@ -373,10 +373,10 @@ class DBMng(object):
         :return:  日志记录
         '''
         if user_id:
-            sql = "select id, user_id, op_type, assets_name, log, log_time from log where user_id=? order by id desc limit ? offset ?"
+            sql = "select id, user_id, op_type, assets_name, _log, log_time from _log where user_id=? order by id desc limit ? offset ?"
             paras = (user_id, limit, offset,)
         else:
-            sql = "select id, user_id, op_type, assets_name, log, log_time from log order by id desc limit ? offset ?"
+            sql = "select id, user_id, op_type, assets_name, _log, log_time from _log order by id desc limit ? offset ?"
             paras = (limit, offset,)
         rows = self.get_all(sql, paras)
         logs = list()
@@ -472,7 +472,7 @@ class DBMng(object):
 
     def get_note_by_id(self, pid):
         row = self.get_one('''select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id,
-                            log, borrow_time from note where id = ?''', (pid,))
+                            _log, borrow_time from note where id = ?''', (pid,))
         if row:
             return NoteDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
                            witness_id=row[5], log=row[6], borrow_time=row[7])
@@ -484,7 +484,7 @@ class DBMng(object):
         if _user:
             paras = (_user.id, limit, offset,)
             rows = self.get_all(
-                "select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id, log, borrow_time from note where dst_user_id = ? order by id desc limit ? offset ?",
+                "select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id, _log, borrow_time from note where dst_user_id = ? order by id desc limit ? offset ?",
                 paras)
             for row in rows:
                 notes.append(NoteDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
@@ -493,7 +493,7 @@ class DBMng(object):
 
     def get_note_by_assets_code(self, code):
         row = self.get_one('''select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id,
-                            log, borrow_time from note where assets_code = ?''', (code,))
+                            _log, borrow_time from note where assets_code = ?''', (code,))
         if row:
             return NoteDto(pid=row[0], assets_code=row[1], assets_name=row[2], src_user_id=row[3], dst_user_id=row[4],
                            witness_id=row[5], log=row[6], borrow_time=row[7])
@@ -506,7 +506,7 @@ class DBMng(object):
             paras = (_user.id, limit, offset,)
             rows = self.get_all(
                 "select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id, src_login_name, "
-                "src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time "
+                "src_name, src_memo, dst_login_name, dst_name, dst_memo, _log, borrow_time, reback_time "
                 "from note_his where dst_user_id = ? order by id desc limit ? offset ?",
                 paras)
             for row in rows:
@@ -521,7 +521,7 @@ class DBMng(object):
         paras = (code, limit, offset,)
         rows = self.get_all(
             "select id, assets_code, assets_name, src_user_id, dst_user_id, witness_id, src_login_name, "
-            "src_name, src_memo, dst_login_name, dst_name, dst_memo, log, borrow_time, reback_time "
+            "src_name, src_memo, dst_login_name, dst_name, dst_memo, _log, borrow_time, reback_time "
             "from note_his where assets_code = ? order by id desc limit ? offset ?",
             paras)
         for row in rows:

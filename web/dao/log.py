@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 """=================================================
-@Project -> File   ：PycharmProjects -> log
+@Project -> File   ：PycharmProjects -> _log
 @IDE    ：PyCharm
 @Author ：Mr. toiler
 @Date   ：1/13/2020 2:34 PM
 @Desc   ：
 =================================================="""
-from web.dao.db import DB, g_db
+from web.dao.db import DB
 import time
 
 
@@ -25,16 +25,14 @@ class LogDao(object):
     insert_sql = "insert into LOG(ID, USER_ID, OP_TYPE,ASSETS_CODE,ASSETS_NAME,LOG,LOG_TIME) values(?,?,?,?,?,?,?)"
     query_sql = "select ID, USER_ID, OP_TYPE,ASSETS_CODE, ASSETS_NAME,LOG,LOG_TIME from LOG"
 
-    def __init__(self, _db: DB=g_db):
+    def __init__(self, _db: DB):
         self._db = _db
 
     def create_table(self):
         self._db.create_table(LogDao.create_sql)
 
-    def insert_log(self, user_id=None, op_type=None, assets_code=None, assets_name=None, log=None, is_commit=False):
-        if user_id and log:
-            para = (None, user_id, op_type, assets_code, assets_name, log, time.time(),)
+    def insert_log(self, user_id=None, op_type=None, assets_code=None, assets_name=None, _log=None, is_commit=False):
+        if user_id and _log:
+            para = (None, user_id, op_type, assets_code, assets_name, _log, time.time(),)
             self._db.insert_one(LogDao.insert_sql, para, is_commit)
 
-
-g_logDao = LogDao()

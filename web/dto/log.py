@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 '''=================================================
-@Project -> File   ：PycharmProjects -> log
+@Project -> File   ：PycharmProjects -> _log
 @IDE    ：PyCharm
 @Author ：Mr. toiler
 @Date   ：1/8/2020 3:48 PM
@@ -32,6 +32,6 @@ class LogDto(object):
         d['user_id'] = self.user_id
         d['op_type'] = self.op_type
         d['assets_name'] = self.assets_name
-        d['log'] = self.log
+        d['_log'] = self.log
         d['log_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.log_time))
         return d

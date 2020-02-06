@@ -13,10 +13,19 @@ __all__ = ['Conf']
 class Conf(object):
     # 访问的根，必须配置
     root_url = '/wtn'
+    is_print_req_head = False
+    is_print_req_body = False
+    is_print_req_paras = True
 
+    # ----------------------  db_config  ---------------------------
     # 是否打印执行的SQL
-    is_print_sql = False
+    is_print_sql = True
 
+    # db 处理类
+    db_module = 'web.dao.db'
+    db_file_path = 'my_sqlite3_1.db'
+
+    # ----------------------  router  ---------------------------
     # 路由，请求Url和处理模块的对应关系
     # 模块需要实现 do_post ， do_get 方法
     # 参数是 HttpRequest

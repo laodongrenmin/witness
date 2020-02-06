@@ -9,8 +9,12 @@
 =================================================="""
 import web.dto as dto
 from request import HttpRequest
+from web.dao.db import DB
+import os
 
-__all__ = ['db_file_path',
+__all__ = [
+           'get_test_db',
+           'db_file_path',
            'get_test_user_dto', 'get_test_book_assets_dto',
            'get_test_request',
            'get_borrow_reason']
@@ -25,12 +29,32 @@ def get_test_user_dto():
 
 
 def get_test_book_assets_dto():
+    file_path = os.path.join(os.path.dirname(__file__), 'test_a.jpg')
+    f = open(file_path, 'rb')
+    try:
+        b = f.read()
+    finally:
+        f.close()
+
+    image = bytearray()
+    image[0:] = b'\r\nContent-Disposition: form-data; name="image"; ' \
+                b'filename="TT.jpg"\r\nContent-Type: image/jpeg\r\n\r\n'
+    image[len(image):] = b
+    image[len(image):] = b'\r\n'
+
     return dto.AssetsDto(code='A8888', user_id=0, user_name='admin',
-                         name='图书', category='类别一', memo='很牛的书', image=b'jpeg\r\n\r\njpeg_content')
+                         name='图书', category='类别一', memo='很牛的书', image=image)
+
+
+def get_test_db():
+    _db = DB(db_file_path)
+    _db.IS_PRINT_SQL = True
+    return _db
 
 
 def get_test_request():
     req = HttpRequest()
+    req.my_db = get_test_db()
     paras = req.parameters
     _user = get_test_user_dto()
     # 前端或者前序流程中（比如测试案例）没有上送跟踪号，就生成跟踪号

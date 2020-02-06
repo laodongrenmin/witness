@@ -6,14 +6,22 @@
 </head>
 <body>
 <form id="assetsInfo" name="assetsInfo" method="post" action="/wtn/assets_add" enctype="multipart/form-data">
+<table>
+    <tr><td>代码</td><td><input type="text" id="code" name="code" value="A7777"></td></tr>
+    <tr><td>名称</td><td><input type="text" id="name" name="name" value="测试资产名称"></td></tr>
+    <tr><td>类别</td><td><input type="text" id="category" name="category" value="测试资产类别"></td></tr>
+    <tr><td>备注</td><td><input type="text" id="memo" name="memo" value="测试资产备注"></td></tr>
+    <tr><td>图片</td><td><input type="file" id="image" name="image"></td></tr>
+    <tr><td>用户标识</td><td><input type="text" id="userInfo.login_name" name="userInfo.login_name" value="13517227956"></td></tr>
+    <tr><td>用户名</td><td><input type="text" id="userInfo.name" name="userInfo.name" value="小李子"></td></tr>
+    <tr><td>部门编号</td><td><input type="text" id="userInfo.dept_code" name="userInfo.dept_code" value="000000000"></td></tr>
+    <tr><td>部  门</td><td><input type="text" id="userInfo.dept_name" name="userInfo.dept_name" value="建信金科/武汉事业群/架构服务团队"></td></tr>
+    <tr><td>电  话</td><td><input type="text" id="userInfo.mobile" name="userInfo.mobile" value="13517227956"></td></tr>
 
-    代码：<input type="text" id="code" name="code" value="A7777"><br>
-    名称：<input type="text" id="name" name="name" value="测试资产名称"><br>
-    用户名：<input type="text" id="userInfo.login_name" name="userInfo.login_name" value="13517227956"><br>
-    备注：<input type="text" id="memo" name="memo" value="测试资产备注"><br>
+    <tr><td>跟踪号</td><td><input type="text" id="trace_id" name="trace_id" value="0000000001"></td></tr>
 
-    图片：<input type="file" id="image" name="image"><br>
-    <input type="submit" value="新建资产">
+    <tr><td colspan="2"><input type="submit" value="新建资产"></td></tr>
+    </table>
 </form>
 
 </body>

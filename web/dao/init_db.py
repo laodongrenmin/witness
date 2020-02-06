@@ -7,23 +7,25 @@
 @Date   ：1/14/2020 2:47 PM
 @Desc   ：
 =================================================="""
-from web.dao.db import g_db
-from web.dao.log import g_logDao
-from web.dao.user import g_userDao
-from web.dao.note import g_noteDao
-from web.dao.assets import g_assetsDao
-from web.dao.my_assets import g_myAssetsDao
-from web.dao.notehis import g_noteHisDao
+from web.dao.db import DB
+from web.dao.log import LogDao
+from web.dao.user import UserDao
+from web.dao.note import NoteDao
+from web.dao.assets import AssetsDao
+from web.dao.my_assets import MyAssetsDao
+from web.dao.notehis import NoteHisDao
 
 
 def create_db(db_file_path):
-    g_db.init_conn_by_name(_db_name=db_file_path)
+    _db = DB()
+    _db.init_conn_by_name(_db_name=db_file_path)
+    _db.close()
 
 
-def create_table():
-    g_logDao.create_table()
-    g_noteDao.create_table()
-    g_userDao.create_table()
-    g_assetsDao.create_table()
-    g_myAssetsDao.create_table()
-    g_noteHisDao.create_table()
+def create_table(_db):
+    LogDao(_db).create_table()
+    NoteDao(_db).create_table()
+    UserDao(_db).create_table()
+    AssetsDao(_db).create_table()
+    MyAssetsDao(_db).create_table()
+    NoteHisDao(_db).create_table()

@@ -8,10 +8,15 @@
 @Desc   ：
 =================================================='''
 import unittest
+from web.test import *
+
+project_path = r"C:\Users\zbd\PycharmProjects\witness"
 
 if __name__ == "__main__":
+
+    set_print_sql_flag(False)
     # 测试用例保存的目录
-    case_dirs = r"C:\Users\ALIENWARE\PycharmProjects\Server\web\test"
+    case_dirs = project_path + r"\web\test"
     # 加载测试用例
     discover = unittest.defaultTestLoader.discover(case_dirs, "*_test.py")
     # 运行测试用例

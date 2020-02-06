@@ -7,8 +7,7 @@
 @Date   ：1/17/2020 5:02 PM
 @Desc   ：
 =================================================="""
-from web.dao.db import DB, g_db
-from web.dto.notehis import NoteHisDto
+from web.dao.db import DB
 from web.dto.user import UserDto
 from web.dto.note import NoteDto
 from web.dto.assets import AssetsDto
@@ -48,7 +47,7 @@ class NoteHisDao(object):
                 "SRC_MOBILE, SRC_NAME, SRC_MEMO, DST_MOBILE, DST_NAME, DST_MEMO, MEMO, LOG, " \
                 "BORROW_TIME, RETURN_TIME from NOTE"
 
-    def __init__(self, _db: DB=g_db):
+    def __init__(self, _db: DB):
         self._db = _db
 
     def create_table(self):
@@ -56,13 +55,10 @@ class NoteHisDao(object):
 
     def insert_note_his(self, _assets: AssetsDto, mng_user: UserDto=None,
                         src_user: UserDto=None, dst_user: UserDto=None, _note: NoteDto=None,
-                        log=None, is_commit=False):
+                        _log=None, is_commit=False):
         sql = NoteHisDao.insert_sql
         para = (None, _assets.code, _assets.name, _assets.category, mng_user.id, mng_user.name,
                 src_user.id, dst_user.id, _note.witness_id, src_user.mobile, src_user.name,
-                src_user.memo, dst_user.mobile, dst_user.name, dst_user.memo, _note.memo, log,
+                src_user.memo, dst_user.mobile, dst_user.name, dst_user.memo, _note.memo, _log,
                 _note.borrow_time, time.time())
         self._db.execute(sql=sql, para=para, is_commit=is_commit)
-
-
-g_noteHisDao = NoteHisDao()

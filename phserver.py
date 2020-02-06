@@ -10,17 +10,18 @@
 import socket
 import multiprocessing
 import time
-import os, sys
+import os
+import sys
 from queue import Empty
 import signal
 import traceback
 
 from request import HttpRequest
 from request import ResponseCode
-from tools import utils
+from utils import *
+from web.conf import Conf
 
 import types
-import sqlite3
 import selectors
 import json
 
@@ -42,11 +43,38 @@ if __name__ == '__main__':
          help="server listen port, default 8010.")
     _opt("-b", "--bind", action="store", type='string', dest="host", default='0.0.0.0',
          help="bind socket to ADDRESS.default 0.0.0.0 ")
-    _opt("--process", action="store", type='int', dest='process', default='5',
+    _opt("--process", action="store", type='int', dest='process', default='1',
          help="server process number, default 5.")
     _opt("--queue", action="store", type='int', dest='queue', default='50',
          help="server queue number, default 50.")
     cmd_options, cmd_args = cmd_parser.parse_args()
+
+
+def te(work_queue, alive_sock_queue):
+    my_print('Work process wait task.')
+    # conn = sqlite3.connect('my_sqlite3.db')
+    if Conf.db_module:
+        __import__(Conf.db_module)
+        lib = sys.modules[Conf.db_module]
+        _db = lib.DB()
+    else:
+        _db = None
+    i = 0
+    while i < 100000000:
+        # 接收sock， 放入选择队列
+        try:
+            # my_print("中断标志: {0}".format(self.term_flag))
+            func, args = work_queue.get(block=True, timeout=1.0)
+            func(*args, alive_sock_queue, _db)
+        except Empty:
+            pass
+        except BaseException:  # ignore all exception
+            my_print('pool {0}'.format(traceback.format_exc(), ))
+            time.sleep(0.001)
+    if _db:
+        _db.close()
+
+    my_print('exit.')
 
 
 class ProcessPool(object):
@@ -58,65 +86,71 @@ class ProcessPool(object):
         self.pools = []
         self.term_flag = False
         for i in range(self.process_number):
-            p = multiprocessing.Process(target=self.e, args=(self.work_queue,self.alive_sock_queue))
+            # p = multiprocessing.Process(target=self.e, args=(self.work_queue, self.alive_sock_queue))
+            p = multiprocessing.Process(target=te, args=(self.work_queue, self.alive_sock_queue))
             p.daemon = True
             p.start()
             self.pools.append(p)
 
-    def _term_handler(self,signal_num, frame):
+    def _term_handler(self, signal_num, frame):
         print('[%d] pool ' % os.getpid() + " get Termination num is {} {}".format(signal_num, frame))
         self.term_flag = True
 
     def e(self, work_queue, alive_sock_queue):
         signal.signal(signal.SIGTERM, self._term_handler)  # SIGTERM 关闭程序信号
         signal.signal(signal.SIGINT, self._term_handler)  # 接收ctrl+c 信号
-        print('[%d] Work process wait task.' % os.getpid())
-        conn = sqlite3.connect('my_sqlite3.db')
+        my_print('Work process wait task.')
+        # conn = sqlite3.connect('my_sqlite3.db')
+        if Conf.db_module:
+            __import__(Conf.db_module)
+            lib = sys.modules[Conf.db_module]
+            _db = lib.DB()
+        else:
+            _db = None
         while not self.term_flag:
             # 接收sock， 放入选择队列
             try:
-                # print(os.getpid(),self.term_flag)
+                # my_print("中断标志: {0}".format(self.term_flag))
                 func, args = work_queue.get(block=True, timeout=1.0)
-                func(*args, alive_sock_queue, conn)
+                func(*args, alive_sock_queue, _db)
             except Empty:
                 pass
             except BaseException:  # ignore all exception
-                print('[%d] pool %s' % (os.getpid(), traceback.format_exc()))
+                my_print('pool {0}'.format(traceback.format_exc(),))
                 time.sleep(0.001)
-                pass
-        conn.close()
-        print('[%d] exit.' % os.getpid())
+        if _db:
+            _db.close()
+
+        my_print('exit.')
 
     def add_work(self, func, *args):
         if not self.term_flag:
             self.work_queue.put((func, args))
 
 
-def tcp_link(sock, addr, alive_sock_queue, conn):
-    # print('[%d] conn id:%d ' % (os.getpid(), id(conn)))
+def tcp_link(sock, addr, alive_sock_queue, _db):
     t_start = time.time()
-    # print('[%d]' % os.getpid() + ' Accept new connection from %s:%s...' % (addr), sock)
-    exception_trace_id = None
+    my_print('Accept new connection from {0}...'.format(addr,))
+    exception_trace_id = generate_trace_id()
     exception_message = None
+    has_exception = True
 
-    req = HttpRequest(sock, addr, conn)
+    req = HttpRequest(sock, addr, _db, trace_id=exception_trace_id)
     need_send = False
     try:
         need_send = req.do()
+        has_exception = False
     except Exception as e:
+        tb = traceback.format_exc()
         if str(e).find('client socket closed.') != -1:
             return
-        exception_trace_id = utils.generate_id()
         exception_message = str(e)
-        print('[%d] tcp_link TraceId:%s %s %s' %
-              (os.getpid(), exception_trace_id, exception_message, traceback.format_exc()))
     except BaseException as be:
-        exception_trace_id = utils.generate_id()
+        tb = traceback.format_exc()
         exception_message = str(be)
-        print('[%d] tcp_link TraceId:%s %s %s' %
-              (os.getpid(), exception_trace_id, exception_message, traceback.format_exc()))
 
-    if exception_trace_id:
+    if has_exception:
+        my_print('tcp_link TraceId:{0} {1} {2}'.format(exception_trace_id, exception_message, tb))
         req.res_command = ResponseCode.INNER_ERROR
         body = dict()
         body['status'] = 9999
@@ -129,7 +163,7 @@ def tcp_link(sock, addr, alive_sock_queue, conn):
 
     if need_send:
         req.res_head['Content-Length'] = str(len(req.res_body))
-        response_header = utils.dict2header(req.res_head).encode('UTF-8')
+        response_header = dict2header(req.res_head).encode('UTF-8')
         # print(req.res_command)
         # print(response_header)
         # print(req.res_body)
@@ -275,6 +309,7 @@ if __name__ == '__main__':
         Server.stop(None)
         exit(1)
 
-    s = Server(host=cmd_options.host, port=cmd_options.port, process_number=cmd_options.process, queue_number=cmd_options.queue)
+    s = Server(host=cmd_options.host, port=cmd_options.port,
+               process_number=cmd_options.process, queue_number=cmd_options.queue)
     s.run()
 

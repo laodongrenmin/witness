@@ -8,39 +8,28 @@
 @Desc   ：
 =================================================="""
 import unittest
-import logging
 import os
 import sqlite3
 from web.dao.init_db import create_db, create_table
 from web.biz.assets import AssetsImpl
-import web.dao as dao
 import utils
 from web.biz.constant import Const
 from web.test import *
+from utils import my_print
 
 
-def get_log(log_name):
-    logging.basicConfig(
-        format="%(asctime)s [%(filename)s,%(funcName)s,%(lineno)s] %(name)s %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-        level=logging.INFO
-    )
-    return logging.getLogger(log_name)
-
-
-logger = get_log(__name__)
-
-
-def pre_db():
-    dao.close_db()
+def pre_db(*args, **kwargs):
+    t = args[0]
+    t.me._db.close()
     # 准备数据文件
     if os.path.exists(db_file_path):
         os.remove(db_file_path)
-    create_db(db_file_path)
-    create_table()
+    t.me._db.reopen()
+    # create_db(db_file_path)
+    create_table(t.me._db)
 
 
-def show_db():
+def show_db(*args, **kwargs):
     with sqlite3.connect(database=db_file_path) as conn:
         query_table_sql = "select name from sqlite_master where type='table'"
         t_cur = conn.cursor()
@@ -48,16 +37,15 @@ def show_db():
         t_rows = t_cur.fetchone()
         while t_rows:
             table_name = t_rows[0]
-            print(t_rows[0])
+            my_print('-' * 15 + table_name + '-' * 15)
             cur = conn.cursor()
             cur.execute("select * from %s" % table_name)
-            print('-' * 15, table_name, '-' * 15)
             rows = cur.fetchone()
             while rows:
                 # for row in rows:
                 #     if type(row) == bytes:
                 #         print(row.decode('UTF-8'))
-                print(rows)
+                my_print(rows)
                 rows = cur.fetchone()
             t_rows = t_cur.fetchone()
 
@@ -65,18 +53,24 @@ def show_db():
 class AssetsImplTestCase(unittest.TestCase):
     me = AssetsImpl()
 
-    # 这里强制打印出执行的sql语句，运行时，会根据配置文件里面的是否打印sql语句参数
-    from web.dao.db import g_db
-    g_db.IS_PRINT_SQL = True
+    # set_print_sql_flag()
 
     def setUp(self):
         self.userDto = get_test_user_dto()
         self.assetsDto = get_test_book_assets_dto()
         self.assets_reason = get_borrow_reason()
+        self.me.set_db(get_test_db())
+
+    def tearDown(self):
+        self.me._db.close()
+
+    def test_00000_pre_data(self):
+        my_print('test_00000_pre_data')
+        pre_db(self)
 
     def test_00100_do_biz(self):
         # 1. 创建用户 以及 新建 不成功的资产 admin
-        print('test_00100_do_biz 测试：' + '创建用户 以及 新建 不成功的资产')
+        my_print('test_00100_do_biz 测试：' + '创建用户 以及 新建 不成功的资产')
         self.assetsDto.name = None
         status, assets, op_type, message = self.do_biz()
 
@@ -87,7 +81,7 @@ class AssetsImplTestCase(unittest.TestCase):
 
     def test_00110_do_biz(self):
         # 1. 创建用户 以及 新建 不成功的资产 admin
-        print('test_00100_do_biz 测试：' + '创建用户 以及 新建 不成功的资产')
+        my_print('test_00100_do_biz 测试：' + '创建用户 以及 新建 不成功的资产')
         self.assetsDto.name = None
         self.userDto.login_name = 'login_name2'
         self.userDto.name = 'admin2'
@@ -100,7 +94,7 @@ class AssetsImplTestCase(unittest.TestCase):
 
     def test_00200_do_biz(self):
         # 1. 新建资产成功
-        print('test_00200_do_biz 测试：' + '成功新建资产')
+        my_print('test_00200_do_biz 测试：' + '成功新建资产')
 
         status, _assets, op_type, message = self.do_biz()
 
@@ -111,7 +105,7 @@ class AssetsImplTestCase(unittest.TestCase):
 
     def test_00300_do_biz(self):
         # 1. 借资产成功
-        print('test_00300_do_biz 测试：' + '成功借资产')
+        my_print('test_00300_do_biz 测试：' + '成功借资产')
 
         status, _assets, op_type, message = self.do_biz()
 
@@ -122,7 +116,7 @@ class AssetsImplTestCase(unittest.TestCase):
 
     def test_00400_do_biz(self):
         # 1. 还资产成功
-        print('test_00400_do_biz 测试：' + '成功还资产')
+        my_print('test_00400_do_biz 测试：' + '成功还资产')
 
         status, _assets, op_type, message = self.do_biz()
 
@@ -131,13 +125,11 @@ class AssetsImplTestCase(unittest.TestCase):
         self.assertEqual(op_type.value, Const.OpType.归还.value, 'should be 归还')
         self.assertEqual(message, '管理员:admin 归还了 admin 借的 admin 的 图书')
 
-    def test_00410_do_biz(self):
-        self.test_00300_do_biz()
-
     def test_00411_do_biz(self):
         # 1. 不能还资产成功
-        print('test_00400_do_biz 测试：' + '不能成功还资产')
+        my_print('test_00400_do_biz 测试：' + '不能成功还资产')
         self.userDto.login_name = 'login_name2'
+        self.do_biz()
         status, _assets, op_type, message = self.do_biz()
 
         self.assertEqual(status.value, Const.OpStatus.失败.value, '不能成功还资产')
@@ -145,12 +137,8 @@ class AssetsImplTestCase(unittest.TestCase):
         self.assertEqual(op_type.value, Const.OpType.归还.value, 'should be 归还')
         self.assertEqual(message, '资产: 图书 不由你管理，不能完成归还动作')
 
-    def test_00412_do_biz(self):
-        self.test_00400_do_biz()
-
     def test_99999_do_biz(self):
-        show_db()
-        self.assertEqual(1, 1)
+        show_db(self)
 
     def do_biz(self):
         trace_id = utils.generate_trace_id()
@@ -162,13 +150,8 @@ class AssetsImplTestCase(unittest.TestCase):
                               name=self.userDto.name, memo=self.userDto.memo, mobile=self.userDto.mobile,
                               trace_id=trace_id)
 
-
-def execute_test():
-    pre_db()
-    unittest.main()
-
-
-if __name__ == '__main__':
-    execute_test()
+#
+# if __name__ == '__main__':
+#     unittest.main()
 
 

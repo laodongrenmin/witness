@@ -40,7 +40,7 @@ class NoteDto(object):
         d['dst_user_id'] = self.dst_user_id
         d['witness_id'] = self.witness_id
         d['memo'] = self.memo
-        d['log'] = self.log
+        d['_log'] = self.log
         d['borrow_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.borrow_time))
         return d
 

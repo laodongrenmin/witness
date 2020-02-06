@@ -46,7 +46,7 @@ class AssetsDto(object):
     def to_html_dict(self):
         d = self.to_dict()
         if self.image:
-            d['image'] = str(base64.b64encode(self.image))
+            d['image'] = base64.b64encode(self.image).decode('UTF-8')
         else:
             d['image'] = None
         return d

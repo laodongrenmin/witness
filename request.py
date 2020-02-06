@@ -8,7 +8,6 @@
 @Desc   ：
 =================================================="""
 from urllib import parse
-from utils import generate_trace_id
 from web.conf import Conf
 import os
 import sys
@@ -17,6 +16,7 @@ import json
 
 from watchdog.observers import Observer
 from watchdog.events import *
+from utils import *
 from threading import Thread
 from functools import lru_cache
 
@@ -34,19 +34,19 @@ class FileEventHandler(FileSystemEventHandler):
         p.start()
 
     def on_moved(self, event):
-        print("[%d] on_moved: %s to %s" % (os.getpid(), event.src_path, event.dest_path))
+        # my_print("on_moved: %s to %s" % (event.src_path, event.dest_path))
         self.update_flag = True
 
     def on_created(self, event):
-        print("[%d] on_created: %s" % (os.getpid(), event.src_path))
+        # my_print("on_created: %s" % (event.src_path,))
         self.update_flag = True
 
     def on_deleted(self, event):
-        print("[%d] on_deleted: %s" % (os.getpid(), event.src_path))
+        # my_print("on_deleted: %s" % (event.src_path,))
         self.update_flag = True
 
     def on_modified(self, event):
-        print("[%d] on_modified: %s" % (os.getpid(), event.src_path))
+        # my_print("on_modified: %s" % (event.src_path,))
         self.update_flag = True
 
     def stop(self):
@@ -54,22 +54,25 @@ class FileEventHandler(FileSystemEventHandler):
 
     def clear_task(self, file_event_handle):
         import time
-        print("[%d] clear_task thread running..." % (os.getpid()))
+        my_print("clear_task thread running...")
         while True:
             time.sleep(1)
             if file_event_handle.update_flag:
-                print("[%d] cache_clear." % (os.getpid()))
+                my_print("cache_clear.")
                 file_event_handle.update_flag = False
                 file_event_handle.cache_func.cache_clear()
 
 
 # 获取静态网页文本内容，并缓存, 文件大了有风险,一般不会太大，就是网站静态页面的大小
-@lru_cache(maxsize=None, typed=True)
+# 缓存256个文件
+@lru_cache(maxsize=256, typed=True)
 def get_file_content(file_path):
-    print("[%d] read file： %s." % (os.getpid(), file_path))
+    my_print("read file： %s." % (file_path,))
     f = open(file_path, 'rb')
-    b = f.read()
-    f.close()
+    try:
+        b = f.read()
+    finally:
+        f.close()
     return b
 
 
@@ -138,21 +141,19 @@ class AttachFile(object):
     def __init__(self, _filed_head, _filed_content):
         self.head = _filed_head
         self.content = _filed_content
-        self.name = re.sub('name="|";', '', re.findall('name=".+";', self.head)[0])
-        tmp_content_type = re.findall('Content-Type:.+', self.head)
-        if len(tmp_content_type) == 0:
-            tmp_content_type = re.findall('content-type:.+', self.head)
-        else:
-            self.content_type = re.sub('Content-Type: ', '', tmp_content_type[0])
-        if len(tmp_content_type) == 0:
-            raise Exception('Attachfile Content-Type or content-type not found.')
-        else:
-            self.content_type = re.sub('Content-Type: ', '', tmp_content_type[0])
+        self.name = self.get_name('name=".*";', 'name="|";')
+        self.content_type = self.get_name('Content-Type:.*', 'Content-Type:')
+        self.file_name = self.get_name('filename=".*"', 'filename="|"')
 
-        self.file_name = re.sub('filename="|"', '', re.findall('filename=".+"', self.head)[0])
+    def get_name(self, p, r):
+        tmp = re.findall(p, self.head, re.I)
+        if len(tmp) == 0:
+            raise Exception('{} is not found.'.format(p,))
+        else:
+            return re.sub(r, '', tmp[0], re.I)
 
     def get_bytes(self):
-        return self.name, self.head.encode('UTF-8') + b'\r\n\r\n' + self.content[0:-2]
+        return self.name, self.head.encode('UTF-8') + b'\r\n\r\n' + self.content
 
 
 class HttpRequest(object):
@@ -160,10 +161,11 @@ class HttpRequest(object):
 
     gmt_format = '%a, %d %b %Y %X GMT+0800(CST)'
 
-    def __init__(self, sock=None, addr=None, db_conn=None):
+    def __init__(self, sock=None, addr=None, _db=None, trace_id=None):
         self.sock = sock
         self.addr = addr
-        self.db_conn = db_conn
+        self.my_db = _db
+        self.trace_id = trace_id
         # self.rfile = sock.makefile("rb", -1)
         # self.wfile = sock.makefile('wb', 0)
 
@@ -225,7 +227,7 @@ class HttpRequest(object):
             sp[2:] = boundary.encode('UTF-8')
             tmps = self._raw_body.split(sp)
             for tmp in tmps:
-                print(tmp)
+                # my_print(tmp)
                 if not tmp or tmp == b'--\r\n':
                     continue
                 head_content = tmp.split(b'\r\n\r\n', 2)
@@ -242,7 +244,8 @@ class HttpRequest(object):
                         content = content.decode('UTF-8')
                         value = content.strip('\r\n')
                     self.parameters[name] = value
-            '''
+            return True
+            """
             ---------------------------974767299852498929531610575
             Content-Disposition: form-data; name="description" 
 
@@ -253,7 +256,7 @@ class HttpRequest(object):
 
             (content of the uploaded file foo.txt)
             ---------------------------974767299852498929531610575--
-            '''
+            """
         return False
 
     def recv_body(self):
@@ -316,14 +319,16 @@ class HttpRequest(object):
         keep_alive = self.req_head.get('Connection', 'Close')
         self.res_head['Connection'] = keep_alive  # 'Keep-Alive' or 'Close' 需要检查报文头，是close，还是keep-Alive
         cookie = self.req_head.get('Cookie', '')
-        # print('[%d] %s' %(os.getpid(), cookie) )
+        my_print('req cookie: {}'.format(cookie,))
+        session_id = generate_trace_id()
         if cookie:
-            if cookie.upper().find('PSESSIONID=') == -1:
-                cookie = "psessionid=%s;" % generate_trace_id()
-        else:
-            cookie = "psessionid=%s;" % generate_trace_id()
+            tmp = re.findall('PySessionId=[a-f0-9]{30,40}', cookie, re.I)
+            if len(tmp) > 0:
+                session_id = re.sub('PySessionId=', '', tmp[0], re.I)
 
+        cookie = 'PySessionId={};HttpOnly;max-age=120'.format(session_id)
         self.res_head['Set-Cookie'] = cookie
+        my_print('res cookie: {}'.format(self.res_head['Set-Cookie']))
 
         m = Conf.router.get(self.command.path, None)
         # 没有配置，当静态资源直接打开文件返回了
@@ -347,5 +352,9 @@ class HttpRequest(object):
 
     def do(self):
         self.recv_head()
+        if Conf.is_print_req_head:
+            my_print("req_head:{0}".format( self._raw_head,))
         self.recv_body()
+        if Conf.is_print_req_body:
+            my_print("req_body:{0}".format(self._raw_body,))
         return self.pre()

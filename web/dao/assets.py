@@ -7,7 +7,7 @@
 @Date   ：1/9/2020 9:00 AM
 @Desc   ：
 =================================================="""
-from web.dao.db import DB, g_db
+from web.dao.db import DB
 from web.dto.assets import AssetsDto
 import time
 
@@ -29,7 +29,7 @@ class AssetsDao(object):
                  "category, memo, image, create_time) values(?,?,?,?,?,?,?,?)"
     query_sql = "select code, user_id, user_name, name, category, memo, image, create_time from assets"
 
-    def __init__(self, _db: DB=g_db):
+    def __init__(self, _db: DB):
         self._db = _db
 
     def create_table(self):
@@ -65,13 +65,21 @@ class AssetsDao(object):
     def insert_assets(self, code=None, user_id=None, user_name=None, assets_name=None,
                       assets_category=None, assets_memo=None, image=None, _assets=None, is_commit=False):
         if _assets and isinstance(_assets, AssetsDto):
+            image = _assets.image
+            if image:
+                tmps = image.split(b'\r\n\r\n', 1)
+                if len(tmps) == 2:
+                    print('----', tmps[1].rstrip(b'\r\n'))
+
+
             para = (_assets.code, _assets.user_id, _assets.user_name, _assets.name, _assets.category,
-                    _assets.memo, _assets.image, time.time())
+                    _assets.memo, image, time.time())
         else:
             para = (code, user_id, user_name, assets_name, assets_category, assets_memo, image, time.time())
+        # 图片保存缩略图到数据库里面，大图保存到另外的数据库或者文件系统里面
+
+
+
         sql = AssetsDao.insert_sql
         self._db.insert_one(sql=sql, para=para, is_commit=is_commit)
         return AssetsDto(para)
-
-
-g_assetsDao = AssetsDao()

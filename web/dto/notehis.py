@@ -56,7 +56,7 @@ class NoteHisDto(object):
         d['dst_login_name'] = self.dst_login_name
         d['dst_name'] = self.dst_name
         d['dst_memo'] = self.dst_memo
-        d['log'] = self.log
+        d['_log'] = self.log
         d['reback_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.reback_time))
         d['borrow_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.borrow_time))
         d['src_mobile'] = self.src_mobile

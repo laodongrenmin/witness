@@ -1,8 +1,272 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b7f65bba-b688-4b00-9bd7-79a07fc14f7b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/test/test_a.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/环境搭建过程.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Server.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phserver.py" beforeDir="false" afterPath="$PROJECT_DIR$/phserver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/root/assets_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/root/assets_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/DBMng.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/DBMng.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/biz/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/biz/assets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/biz/log.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/biz/log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/conf/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/conf/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/assets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/init_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/log.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/my_assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/my_assets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/note.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/note.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/notehis.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/notehis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dto/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/assets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dto/log.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dto/note.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/note.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dto/notehis.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/notehis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dto/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/servlet/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/servlet/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/servlet/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/servlet/assets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/test/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/test/assets_biz_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/assets_biz_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/test/assets_servlet_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/assets_servlet_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/test/l001.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/l001.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/test/test_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/test_main.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1XJzSv0m5sf6pCIU373vwwZwK4M" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/web/test" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zbd\PycharmProjects\witness\web\test" />
+      <recent name="C:\Users\zbd\PycharmProjects\witness" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.l001">
+    <configuration name="l001" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Server" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/test/l001.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="phserver" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Server" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/phserver.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests in assets_biz_test.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="Server" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/web/test/assets_biz_test.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests in assets_servlet_test.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="Server" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/web/test/assets_servlet_test.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.phserver" />
+      <item itemvalue="Python tests.Unittests in assets_biz_test.py" />
+      <item itemvalue="Python tests.Unittests in assets_servlet_test.py" />
+      <item itemvalue="Python.l001" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.l001" />
+        <item itemvalue="Python tests.Unittests in assets_biz_test.py" />
+        <item itemvalue="Python.phserver" />
+        <item itemvalue="Python tests.Unittests in assets_servlet_test.py" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b7f65bba-b688-4b00-9bd7-79a07fc14f7b" name="Default Changelist" comment="" />
+      <created>1580778988463</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1580778988463</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="361" y="71" key="#Notifications" timestamp="1580869888323">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="361" y="71" key="#Notifications/0.0.1536.824@0.0.1536.824" timestamp="1580869888323" />
+    <state x="223" y="68" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1580959717292">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="223" y="68" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1580959717292" />
+    <state x="168" y="120" width="1200" height="584" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1580787229811">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="168" y="120" width="1200" height="584" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1536.824@0.0.1536.824" timestamp="1580787229811" />
+    <state x="477" y="25" key="#test_main" timestamp="1580782629716">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="477" y="25" key="#test_main/0.0.1536.824@0.0.1536.824" timestamp="1580782629716" />
+    <state x="548" y="168" key="FileChooserDialogImpl" timestamp="1580871281004">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="548" y="168" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1580871281004" />
+    <state width="1515" height="228" key="GridCell.Tab.0.bottom" timestamp="1581001532129">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="228" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581001532129" />
+    <state width="1515" height="228" key="GridCell.Tab.0.center" timestamp="1581001532129">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="228" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581001532129" />
+    <state width="1515" height="228" key="GridCell.Tab.0.left" timestamp="1581001532128">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="228" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581001532128" />
+    <state width="1515" height="228" key="GridCell.Tab.0.right" timestamp="1581001532129">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="228" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581001532129" />
+    <state width="1515" height="192" key="GridCell.Tab.1.bottom" timestamp="1581001297214">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="192" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581001297214" />
+    <state width="1515" height="192" key="GridCell.Tab.1.center" timestamp="1581001297214">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="192" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1581001297214" />
+    <state width="1515" height="192" key="GridCell.Tab.1.left" timestamp="1581001297214">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="192" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1581001297214" />
+    <state width="1515" height="192" key="GridCell.Tab.1.right" timestamp="1581001297214">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1515" height="192" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1581001297214" />
+    <state x="270" y="55" key="SettingsEditor" timestamp="1580786560020">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="270" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1580786560020" />
+    <state x="449" y="237" key="com.intellij.ide.util.TipDialog" timestamp="1580869874540">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="449" y="237" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1580869874540" />
+    <state x="462" y="204" key="git4idea.merge.GitPullDialog" timestamp="1580781815344">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="462" y="204" key="git4idea.merge.GitPullDialog/0.0.1536.824@0.0.1536.824" timestamp="1580781815344" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1580980700677">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1580980700677" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/web/test/assets_biz_test.py</url>
+          <line>154</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/web/test/assets_servlet_test.py</url>
+          <line>27</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/web/test/l001.py</url>
+          <line>26</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="tests">
+        <watch expression="args[0]" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

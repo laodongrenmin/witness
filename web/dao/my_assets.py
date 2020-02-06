@@ -7,7 +7,7 @@
 @Date   ：1/17/2020 10:14 AM
 @Desc   ：
 =================================================="""
-from web.dao.db import DB, g_db
+from web.dao.db import DB
 from web.dto.myassets import MyAssetsDto
 import time
 
@@ -31,7 +31,7 @@ class MyAssetsDao(object):
                  "MEMO, STATUS, OP_TIME, CREATE_TIME) values(?,?,?,?,?,?,?,?,?)"
     query_sql = "select ID, CODE, USER_ID, USER_NAME, NAME, MEMO, STATUS, OP_TIME, CREATE_TIME from MY_ASSETS"
 
-    def __init__(self, _db: DB=g_db):
+    def __init__(self, _db: DB):
         self._db = _db
 
     def create_table(self):
@@ -64,5 +64,3 @@ class MyAssetsDao(object):
     def update_my_assets_status(self, code=None, status=None):
         self._db.execute("update my_assets set status = ?, op_time = ? where code = ?", (status, time.time(), code))
 
-
-g_myAssetsDao = MyAssetsDao()

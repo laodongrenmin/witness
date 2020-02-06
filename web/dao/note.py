@@ -7,7 +7,7 @@
 @Date   ：1/13/2020 5:13 PM
 @Desc   ：
 =================================================='''
-from web.dao.db import DB, g_db
+from web.dao.db import DB
 from web.dto.note import NoteDto
 import time
 
@@ -32,7 +32,7 @@ class NoteDao(object):
     delete_sql = "delete from NOTE"
     query_sql = "select ID, ASSETS_CODE, ASSETS_NAME,SRC_USER_ID,DST_USER_ID,WITNESS_ID,MEMO,LOG,BORROW_TIME from NOTE"
 
-    def __init__(self, _db: DB=g_db):
+    def __init__(self, _db: DB):
         self._db = _db
 
     def create_table(self):
@@ -57,6 +57,3 @@ class NoteDao(object):
         sql = NoteDao.delete_sql + " where id=?"
         para = (pid,)
         self._db.execute(sql=sql, para=para, is_commit=is_commit)
-
-
-g_noteDao = NoteDao()

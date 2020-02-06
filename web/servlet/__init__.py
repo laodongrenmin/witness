@@ -14,7 +14,7 @@ import json
 __all__ = ['package_body']
 
 
-def package_body(req=None, status: Const.OpStatus=None, op_type: Const.OpType=None, message=None, assets=None):
+def package_body(req=None, status: Const.OpStatus = None, op_type: Const.OpType = None, message=None, assets=None):
     body = dict()
     body['status'] = status.value
     body['op_type'] = op_type.value
