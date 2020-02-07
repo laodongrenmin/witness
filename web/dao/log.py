@@ -15,6 +15,7 @@ class LogDao(object):
     create_sql = """CREATE TABLE LOG (
                 ID INTEGER PRIMARY KEY, 
                 USER_ID INT, 
+                USER_NAME VARCHAR(40),
                 OP_TYPE INT, 
                 ASSETS_CODE VARCHAR(40), 
                 ASSETS_NAME VARCHAR(40), 
@@ -22,8 +23,9 @@ class LogDao(object):
                 LOG_TIME TIMESTAMP)"""
 # [(None, 3, OpType.借出.value, '餐卡', '小李子借给小东子餐卡', time.time()),
 #  (None, 2, OpType.借出.value, '餐卡', '小东子借给小李子餐卡', time.time()), ]],
-    insert_sql = "insert into LOG(ID, USER_ID, OP_TYPE,ASSETS_CODE,ASSETS_NAME,LOG,LOG_TIME) values(?,?,?,?,?,?,?)"
-    query_sql = "select ID, USER_ID, OP_TYPE,ASSETS_CODE, ASSETS_NAME,LOG,LOG_TIME from LOG"
+    insert_sql = "insert into LOG(ID, USER_ID, USER_NAME, OP_TYPE,ASSETS_CODE,ASSETS_NAME,LOG,LOG_TIME) " \
+                 "values(?,?,?,?,?,?,?,?)"
+    query_sql = "select ID, USER_ID, USER_NAME, OP_TYPE,ASSETS_CODE, ASSETS_NAME,LOG,LOG_TIME from LOG"
 
     def __init__(self, _db: DB):
         self._db = _db
@@ -31,8 +33,9 @@ class LogDao(object):
     def create_table(self):
         self._db.create_table(LogDao.create_sql)
 
-    def insert_log(self, user_id=None, op_type=None, assets_code=None, assets_name=None, _log=None, is_commit=False):
+    def insert_log(self, user_id=None, user_name=None, op_type=None,
+                   assets_code=None, assets_name=None, _log=None, is_commit=False):
         if user_id and _log:
-            para = (None, user_id, op_type, assets_code, assets_name, _log, time.time(),)
+            para = (None, user_id, user_name, op_type, assets_code, assets_name, _log, time.time(),)
             self._db.insert_one(LogDao.insert_sql, para, is_commit)
 

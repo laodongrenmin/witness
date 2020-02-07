@@ -21,7 +21,7 @@ class DB(object):
         self.conn = None
         self.db_name = None
         if para is None:
-            self.db_name = Conf.db_file_path
+            self.db_name = Conf.db_file_path_rw
             self.init_conn_by_name()
         elif isinstance(para, str):
             self.db_name = para

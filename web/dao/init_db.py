@@ -22,10 +22,10 @@ def create_db(db_file_path):
     _db.close()
 
 
-def create_table(_db):
+def create_table(_db, _img_db):
     LogDao(_db).create_table()
     NoteDao(_db).create_table()
     UserDao(_db).create_table()
-    AssetsDao(_db).create_table()
+    AssetsDao(_db, _img_db).create_table()
     MyAssetsDao(_db).create_table()
     NoteHisDao(_db).create_table()

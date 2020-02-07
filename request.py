@@ -161,10 +161,14 @@ class HttpRequest(object):
 
     gmt_format = '%a, %d %b %Y %X GMT+0800(CST)'
 
-    def __init__(self, sock=None, addr=None, _db=None, trace_id=None):
+    def __init__(self, sock=None, addr=None, _db=None, _img_db=None, trace_id=None):
         self.sock = sock
         self.addr = addr
         self.my_db = _db
+        if _img_db:
+            self.my_img_db = _img_db
+        else:
+            self.my_img_db = self.my_db
         self.trace_id = trace_id
         # self.rfile = sock.makefile("rb", -1)
         # self.wfile = sock.makefile('wb', 0)

@@ -10,7 +10,7 @@
 import unittest
 from web.test import *
 
-project_path = r"C:\Users\zbd\PycharmProjects\witness"
+project_path = r"/"
 
 if __name__ == "__main__":
 

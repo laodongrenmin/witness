@@ -17,26 +17,29 @@ import traceback
 
 
 class AssetsImpl(object):
-    def __init__(self, _dao=dao, _db=None):
+    def __init__(self, _dao=dao, _db=None, _img_db=None):
         self._dao = _dao
         self._db = _db
+        if _img_db:
+            self._img_db = _img_db
+        else:
+            self._img_db = self._db
         self.log_impl = LogImpl(self._dao, self._db)
 
     def set_dao(self, _dao):
         self._dao = _dao
         self.log_impl.set_dao(self._dao)
 
-    def set_db(self, _db):
+    def set_db(self, _db, _img_db=None):
         self._db = _db
+        if _img_db:
+            self._img_db = _img_db
+        else:
+            self._img_db = self._db
         self.log_impl.set_db(self._db)
 
     def get_image(self, code):
-        _assets = self._dao.get_assets_by_code(self._db, code=code)
-        if _assets and _assets.image:
-            head, content = _assets.image.split(b'\r\n\r\n', 2)
-            attach_file = AttachFile(head.decode('utf-8'), content)
-            return attach_file.content_type, attach_file.content
-        return None, None
+        return self._dao.get_assets_image_by_code(self._img_db, code=code)
 
     def get_or_create_user(self, u: dto.UserDto):
         """
@@ -65,18 +68,19 @@ class AssetsImpl(object):
                 _assets.user_id = _user.id
                 _assets.user_name = _user.name
 
-                ret_assets = self._dao.insert_assets(self._db, _assets=_assets)
+                ret_assets = self._dao.insert_assets(self._db, self._img_db, _assets=_assets)
                 message = "%s(%s) 添加资产 %s(%s)-%s 并设置管理成功" % \
                           (_user.name, _user.login_name, _assets.name, _assets.code, _assets.category)
                 self._dao.insert_my_assets(self._db, _user=_user, _assets=_assets)
-                self.log_impl.log(user_id=_user.id, op_type=Const.OpType.新建.value,
+                self.log_impl.log(user_id=_user.id, user_name=_user.name, op_type=Const.OpType.新建.value,
                                   assets_code=_assets.code,
                                   assets_name=_assets.name, _log=message, is_commit=True, is_print=False)
                 status = Const.OpStatus.成功
             else:
                 message = "添加资产,代码和名称是必须的，代码为: %s 名称为：%s" % (_assets.code, _assets.name)
-                self.log_impl.log(user_id=_user.id, op_type=Const.OpType.新建.value, assets_code=_assets.code,
-                                  assets_name=_assets.name, _log=message, is_commit=True, is_print=False)
+                # self.log_impl.log(user_id=_user.id, user_name=_user.name, op_type=Const.OpType.新建.value,
+                #                   assets_code=_assets.code, assets_name=_assets.name, _log=message,
+                #                   is_commit=True, is_print=False)
         except BaseException as b:
             tb = traceback.format_exc()
             self._dao.rollback(self._db)
@@ -94,11 +98,11 @@ class AssetsImpl(object):
             self._dao.insert_note(self._db, assets_code=_assets.code, assets_name=_assets.name, src_user_id=_assets.user_id,
                                   dst_user_id=_user.id, reason=reason, _log=message)
             self._dao.update_my_assets_status(self._db, _assets.code, 1)
-            self.log_impl.log(user_id=_user.id, op_type=Const.OpType.借出.value, assets_code=_assets.code,
+            self.log_impl.log(user_id=_user.id, user_name=_user.name, op_type=Const.OpType.借出.value, assets_code=_assets.code,
                               assets_name=_assets.name, _log=message, is_commit=True, is_print=False)
         except BaseException:
             tb = traceback.format_exc()
-            self._dao.rollback()
+            self._dao.rollback(self._db)
             e_str = '%s 失败,跟踪号: %s' % (message, trace_id)
             print(e_str + "\r\n" + tb)
         if e_str:
@@ -121,8 +125,9 @@ class AssetsImpl(object):
                                           src_user=src_user, dst_user=dst_user, _note=_note, _log=message)
                 self._dao.del_note_by_id(self._db, _note.id)
                 self._dao.update_my_assets_status(self._db, _assets.code, 2)
-                self.log_impl.log(user_id=_user.id, op_type=Const.OpType.归还.value, assets_code=_assets.code,
-                                  assets_name=_assets.name, _log=message, is_commit=True, is_print=False)
+                self.log_impl.log(user_id=_user.id, user_name=_user.name, op_type=Const.OpType.归还.value,
+                                  assets_code=_assets.code, assets_name=_assets.name, _log=message,
+                                  is_commit=True, is_print=False)
                 status = Const.OpStatus.成功
         except BaseException:
             tb = traceback.format_exc()

@@ -11,16 +11,13 @@ import web.dto as dto
 from request import HttpRequest
 from web.dao.db import DB
 import os
+from web.conf import Conf
 
 __all__ = [
-           'get_test_db',
-           'db_file_path',
+           'get_test_db', 'get_test_img_db',
            'get_test_user_dto', 'get_test_book_assets_dto',
            'get_test_request',
            'get_borrow_reason']
-
-
-db_file_path = "my_sqlite3_1.db"
 
 
 def get_test_user_dto():
@@ -29,7 +26,7 @@ def get_test_user_dto():
 
 
 def get_test_book_assets_dto():
-    file_path = os.path.join(os.path.dirname(__file__), 'test_a.jpg')
+    file_path = os.path.join(os.path.dirname(__file__), r'res\d.jpg')
     f = open(file_path, 'rb')
     try:
         b = f.read()
@@ -47,14 +44,21 @@ def get_test_book_assets_dto():
 
 
 def get_test_db():
-    _db = DB(db_file_path)
-    _db.IS_PRINT_SQL = True
+    _db = DB(Conf.db_file_path_rw)
+    _db.IS_PRINT_SQL = False
+    return _db
+
+
+def get_test_img_db():
+    _db = DB(Conf.db_file_path_img)
+    _db.IS_PRINT_SQL = False
     return _db
 
 
 def get_test_request():
     req = HttpRequest()
     req.my_db = get_test_db()
+    req.my_img_db = get_test_img_db()
     paras = req.parameters
     _user = get_test_user_dto()
     # 前端或者前序流程中（比如测试案例）没有上送跟踪号，就生成跟踪号

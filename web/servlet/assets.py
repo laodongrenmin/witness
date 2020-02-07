@@ -20,7 +20,7 @@ def get_image(req: HttpRequest, code):
     b_ret = False
     op_type = Const.OpType.查询
     if code:
-        assets_impl = AssetsImpl(req.my_db)
+        assets_impl = AssetsImpl(_db=req.my_db, _img_db=req.my_img_db)
         content_type, content = assets_impl.get_image(code=code)
         if content_type and content:
             req.res_head['Content-Type'] = content_type

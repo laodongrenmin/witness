@@ -23,7 +23,9 @@ class Conf(object):
 
     # db 处理类
     db_module = 'web.dao.db'
-    db_file_path = 'my_sqlite3_1.db'
+    db_file_path_rw = 'my_sqlite3_1.db'
+
+    db_file_path_img = 'my_sqlite3_img.db'
 
     # ----------------------  router  ---------------------------
     # 路由，请求Url和处理模块的对应关系

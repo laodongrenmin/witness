@@ -12,40 +12,54 @@ import os
 import sqlite3
 from web.dao.init_db import create_db, create_table
 from web.biz.assets import AssetsImpl
-import utils
 from web.biz.constant import Const
 from web.test import *
-from utils import my_print
+from utils import my_print, generate_trace_id
+from web.conf import Conf
 
 
 def pre_db(*args, **kwargs):
     t = args[0]
     t.me._db.close()
+    t.me._img_db.close()
     # 准备数据文件
-    if os.path.exists(db_file_path):
-        os.remove(db_file_path)
+    if os.path.exists(Conf.db_file_path_rw):
+        os.remove(Conf.db_file_path_rw)
+    if os.path.exists(Conf.db_file_path_img):
+        os.remove(Conf.db_file_path_img)
+
     t.me._db.reopen()
-    # create_db(db_file_path)
-    create_table(t.me._db)
+    t.me._img_db.reopen()
+    # create_db(db_file_path_rw)
+    create_table(t.me._db, t.me._img_db)
 
 
 def show_db(*args, **kwargs):
-    with sqlite3.connect(database=db_file_path) as conn:
+    _show_db(Conf.db_file_path_rw)
+    if Conf.db_file_path_img != Conf.db_file_path_rw:
+        _show_db(Conf.db_file_path_img)
+
+
+def _show_db(file_path):
+    with sqlite3.connect(database=file_path) as conn:
         query_table_sql = "select name from sqlite_master where type='table'"
         t_cur = conn.cursor()
         t_cur.execute(query_table_sql)
         t_rows = t_cur.fetchone()
         while t_rows:
             table_name = t_rows[0]
-            my_print('-' * 15 + table_name + '-' * 15)
+            my_print('-' * 15 + file_path + '(' + table_name + ')' + '-' * 15)
             cur = conn.cursor()
             cur.execute("select * from %s" % table_name)
             rows = cur.fetchone()
             while rows:
-                # for row in rows:
-                #     if type(row) == bytes:
-                #         print(row.decode('UTF-8'))
-                my_print(rows)
+                rows_print = list()
+                for row in rows:
+                    if row and (type(row) == bytearray or type(row) == bytes) and len(row) > 4096:
+                        rows_print.append(r'too long, len is {}'.format(len(row)))
+                    else:
+                        rows_print.append(row)
+                my_print(rows_print)
                 rows = cur.fetchone()
             t_rows = t_cur.fetchone()
 
@@ -53,13 +67,11 @@ def show_db(*args, **kwargs):
 class AssetsImplTestCase(unittest.TestCase):
     me = AssetsImpl()
 
-    # set_print_sql_flag()
-
     def setUp(self):
         self.userDto = get_test_user_dto()
         self.assetsDto = get_test_book_assets_dto()
         self.assets_reason = get_borrow_reason()
-        self.me.set_db(get_test_db())
+        self.me.set_db(get_test_db(), get_test_img_db())
 
     def tearDown(self):
         self.me._db.close()
@@ -141,7 +153,7 @@ class AssetsImplTestCase(unittest.TestCase):
         show_db(self)
 
     def do_biz(self):
-        trace_id = utils.generate_trace_id()
+        trace_id = generate_trace_id()
         return self.me.do_biz(assets_code=self.assetsDto.code, assets_name=self.assetsDto.name,
                               assets_category=self.assetsDto.category,
                               assets_memo=self.assetsDto.memo,

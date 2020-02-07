@@ -10,11 +10,23 @@
 import time, hashlib, decimal
 import os
 import sys
+# 如果没有把路径添加到系统中，就需要在导入库之前把搜索路径添加上
+# vips_home = r'D:\software\vips-dev-8.7\bin'
+# os.environ['PATH'] = vips_home + ';' + os.environ['PATH']
+import pyvips
 
-__all__ = ['dict2header', 'generate_trace_id', 'my_print']
+__all__ = ['dict2header', 'generate_trace_id',
+           'read_bytes_from_file', 'write_bytes_to_file',
+           'thumbnail',
+           'my_print']
 
 
 def dict2header(d):
+    """
+    封装字典为Head头
+    :param d:
+    :return:
+    """
     header = ''
     for k in d:
         if d[k]:
@@ -23,10 +35,48 @@ def dict2header(d):
 
 
 def generate_trace_id():
+    """
+    生成跟踪号，也用于sessionID
+    :return:
+    """
     cookie = str(decimal.Decimal(time.time() * 1000000))
     hl = hashlib.md5()
     hl.update(cookie.encode(encoding='utf-8'))
     return hl.hexdigest()
+
+
+def thumbnail(buf, size=128, q=75):
+    thumb = pyvips.Image.thumbnail_buffer(buf, 128)
+    data = thumb.write_to_buffer('.jpg[optimize_coding,strip]', Q=q)
+    return data
+
+
+def read_bytes_from_file(file_path):
+    """
+    小文件读
+    :param file_path:
+    :return:
+    """
+    f = open(file_path, 'rb')
+    try:
+        b = f.read()
+    finally:
+        f.close()
+    return b
+
+
+def write_bytes_to_file(file_path, buf):
+    """
+    小文件写
+    :param file_path:
+    :param buf:
+    :return:
+    """
+    f = open(file_path, 'wb')
+    try:
+        f.write(buf)
+    finally:
+        f.close()
 
 
 def my_print_1(str_log):

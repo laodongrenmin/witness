@@ -34,9 +34,10 @@ def rollback(_db: DB):
 
 
 # --------------------  _log     -----------------------------
-def insert_log(_db: DB, user_id=None, op_type=None, assets_code=None, assets_name=None, _log=None, is_commit=False):
+def insert_log(_db: DB, user_id=None, user_name=None, op_type=None, assets_code=None, assets_name=None,
+               _log=None, is_commit=False):
     log_dao = LogDao(_db)
-    log_dao.insert_log(user_id=user_id, op_type=op_type, assets_code=assets_code,
+    log_dao.insert_log(user_id=user_id, user_name=user_name, op_type=op_type, assets_code=assets_code,
                        assets_name=assets_name, _log=_log, is_commit=is_commit)
 
 
@@ -51,9 +52,14 @@ def get_assets_by_user_id(_db, user_id=None, limit=1000, offset=0):
     return assets_dao.get_assets_by_user_id(user_id=user_id, limit=limit, offset=offset)
 
 
-def insert_assets(_db, code=None, user_id=None, user_name=None, assets_name=None,
+def get_assets_image_by_code(_img_db, code, _db=None):
+    assert_dao = AssetsDao(_db=_db, _img_db=_img_db)
+    return assert_dao.get_assets_image_by_code(code=code)
+
+
+def insert_assets(_db, _img_db, code=None, user_id=None, user_name=None, assets_name=None,
                   assets_category=None, assets_memo=None, image=None, _assets=None, is_commit=False):
-    assets_dao = AssetsDao(_db)
+    assets_dao = AssetsDao(_db, _img_db)
     return assets_dao.insert_assets(code=code, user_id=user_id, user_name=user_name, assets_name=assets_name,
                                     assets_category=assets_category, assets_memo=assets_memo, image=image,
                                     _assets=_assets, is_commit=is_commit)
