@@ -56,16 +56,18 @@ def te(work_queue, alive_sock_queue):
     if Conf.db_module:
         __import__(Conf.db_module)
         lib = sys.modules[Conf.db_module]
-        _db = lib.DB()
+        _db = lib.DB(Conf.db_file_path_rw)
+        _img_db = lib.DB(Conf.db_file_path_img)
     else:
         _db = None
+        _img_db = None
     i = 0
     while i < 100000000:
         # 接收sock， 放入选择队列
         try:
             # my_print("中断标志: {0}".format(self.term_flag))
             func, args = work_queue.get(block=True, timeout=1.0)
-            func(*args, alive_sock_queue, _db)
+            func(*args, alive_sock_queue, _db, _img_db)
         except Empty:
             pass
         except BaseException:  # ignore all exception
@@ -128,14 +130,14 @@ class ProcessPool(object):
             self.work_queue.put((func, args))
 
 
-def tcp_link(sock, addr, alive_sock_queue, _db):
+def tcp_link(sock, addr, alive_sock_queue, _db, _img_db):
     t_start = time.time()
     my_print('Accept new connection from {0}...'.format(addr,))
     exception_trace_id = generate_trace_id()
     exception_message = None
     has_exception = True
 
-    req = HttpRequest(sock, addr, _db, trace_id=exception_trace_id)
+    req = HttpRequest(sock, addr, _db=_db, _img_db=_img_db, trace_id=exception_trace_id)
     need_send = False
     try:
         need_send = req.do()

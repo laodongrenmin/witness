@@ -39,14 +39,16 @@ class AssetsDto(object):
         d['name'] = self.name
         d['category'] = self.category
         d['memo'] = self.memo
-        d['image'] = '%s/assets?action=get_image&code=%s' % (Conf.root_url, self.code)   # 给出访问图像的地址
+        d['image_url'] = '%s/assets?action=get_image&code=%s' % (Conf.root_url, self.code)   # 给出访问图像的地址
+        d['image'] = b''
         d['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(self.create_time))
         return d
 
     def to_html_dict(self):
         d = self.to_dict()
-        if self.image:
-            d['image'] = base64.b64encode(self.image).decode('UTF-8')
+        if self.image and len(self.image) > 0:
+            d['image_url'] = '{0}/assets?action=get_image&code={1}'.format(Conf.root_url, self.code,)
+            d['image'] = 'data:image/jpeg;base64,' + base64.b64encode(self.image).decode('UTF-8')
         else:
             d['image'] = None
         return d

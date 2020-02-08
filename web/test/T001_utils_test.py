@@ -14,7 +14,7 @@ import os
 
 class AssetsImplTestCase(unittest.TestCase):
     def setUp(self):
-        file_path = os.path.join(os.path.dirname(__file__), r'res\d1.jpg')
+        file_path = os.path.join(os.path.dirname(__file__), r'res\d.jpg')
         self.image_file_bytes = self.image_file_bytes = read_bytes_from_file(file_path)
         pass
 
@@ -23,5 +23,5 @@ class AssetsImplTestCase(unittest.TestCase):
 
     def test_10000_thumbnail(self):
         data = thumbnail(self.image_file_bytes)
-        file_path = os.path.join(os.path.dirname(__file__), r'res\d1_thumbnail_buffer.jpg')
+        file_path = os.path.join(os.path.dirname(__file__), r'res\d_thumbnail_buffer.jpg')
         write_bytes_to_file(file_path, data)

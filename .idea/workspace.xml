@@ -2,28 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b7f65bba-b688-4b00-9bd7-79a07fc14f7b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/web/test/T001_utils_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/test/res/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/test/res/d.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phserver.py" beforeDir="false" afterPath="$PROJECT_DIR$/phserver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/request.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/root/assets_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/root/assets_add.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/biz/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/biz/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/biz/log.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/biz/log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/conf/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/conf/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/dao/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/dao/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/assets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/dao/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/dao/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/init_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/dao/log.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/dto/log.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dto/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/assets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/servlet/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/servlet/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test/assets_biz_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/T002_assets_biz_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test/assets_servlet_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/T003_assets_servlet_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/test/T001_utils_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/T001_utils_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/test/T002_assets_biz_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/T002_assets_biz_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/test/l001.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/l001.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test/test_a.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/res/test_a.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test/test_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/test_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/环境搭建过程.md" beforeDir="false" afterPath="$PROJECT_DIR$/环境搭建过程.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,10 +40,18 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/web/doc" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/root" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="terminal" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="Server" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="Server" />
+      </console-settings>
+    </option>
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -61,12 +60,13 @@
       <recent name="C:\Users\zbd\PycharmProjects\witness\web\test\res" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zbd\PycharmProjects\witness\root" />
+      <recent name="C:\Users\zbd\PycharmProjects\witness" />
       <recent name="C:\Users\zbd\PycharmProjects\witness\web\doc" />
       <recent name="C:\Users\zbd\PycharmProjects\witness\web\test" />
-      <recent name="C:\Users\zbd\PycharmProjects\witness" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.l001">
+  <component name="RunManager" selected="Python.phserver">
     <configuration name="l001" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Server" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -160,11 +160,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.l001" />
-        <item itemvalue="Python tests.Unittests in T002_assets_biz_test.py" />
-        <item itemvalue="Python tests.Unittests for T002_assets_biz_test.AssetsImplTestCase.test_00200_do_biz" />
-        <item itemvalue="Python tests.Unittests in T001_utils_test.py" />
         <item itemvalue="Python.phserver" />
+        <item itemvalue="Python tests.Unittests in T002_assets_biz_test.py" />
+        <item itemvalue="Python tests.Unittests in T001_utils_test.py" />
+        <item itemvalue="Python.l001" />
+        <item itemvalue="Python tests.Unittests for T002_assets_biz_test.AssetsImplTestCase.test_00200_do_biz" />
       </list>
     </recent_temporary>
   </component>
@@ -186,12 +186,20 @@
       <option name="project" value="LOCAL" />
       <updated>1581001816454</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="完成图片保存缩略图以及图片原始图与资产库分离，通过添加专门保存图像的数据库">
+      <created>1581086067263</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1581086067263</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="准备修改图片保存缩略图以及图片原始图与资产库分离" />
-    <option name="LAST_COMMIT_MESSAGE" value="准备修改图片保存缩略图以及图片原始图与资产库分离" />
+    <MESSAGE value="完成图片保存缩略图以及图片原始图与资产库分离，通过添加专门保存图像的数据库" />
+    <option name="LAST_COMMIT_MESSAGE" value="完成图片保存缩略图以及图片原始图与资产库分离，通过添加专门保存图像的数据库" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="71" key="#Notifications" timestamp="1580869888323">
@@ -206,14 +214,18 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="168" y="120" width="1200" height="584" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1536.824@0.0.1536.824" timestamp="1580787229811" />
+    <state x="530" y="215" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1581138725695">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="530" y="215" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1581138725695" />
     <state x="477" y="25" key="#test_main" timestamp="1580782629716">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="477" y="25" key="#test_main/0.0.1536.824@0.0.1536.824" timestamp="1580782629716" />
-    <state x="409" y="6" key="CommitChangelistDialog2" timestamp="1581001814142">
+    <state x="409" y="6" key="CommitChangelistDialog2" timestamp="1581086065440">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="409" y="6" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1581001814142" />
+    <state x="409" y="6" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1581086065440" />
     <state x="93" y="93" width="1350" height="638" key="DiffContextDialog" timestamp="1581061696076">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -222,46 +234,50 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="168" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1580871281004" />
-    <state width="1515" height="256" key="GridCell.Tab.0.bottom" timestamp="1581085659972">
+    <state width="1515" height="302" key="GridCell.Tab.0.bottom" timestamp="1581157360002">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="256" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581085659972" />
-    <state width="1515" height="256" key="GridCell.Tab.0.center" timestamp="1581085659971">
+    <state width="1515" height="302" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581157360002" />
+    <state width="1515" height="302" key="GridCell.Tab.0.center" timestamp="1581157360002">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="256" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581085659971" />
-    <state width="1515" height="256" key="GridCell.Tab.0.left" timestamp="1581085659971">
+    <state width="1515" height="302" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581157360002" />
+    <state width="1515" height="302" key="GridCell.Tab.0.left" timestamp="1581157360002">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="256" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581085659971" />
-    <state width="1515" height="256" key="GridCell.Tab.0.right" timestamp="1581085659972">
+    <state width="1515" height="302" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581157360002" />
+    <state width="1515" height="302" key="GridCell.Tab.0.right" timestamp="1581157360002">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="256" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581085659972" />
-    <state width="1515" height="192" key="GridCell.Tab.1.bottom" timestamp="1581063400598">
+    <state width="1515" height="302" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581157360002" />
+    <state width="1515" height="208" key="GridCell.Tab.1.bottom" timestamp="1581136478676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="192" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581063400598" />
-    <state width="1515" height="192" key="GridCell.Tab.1.center" timestamp="1581063400597">
+    <state width="1515" height="208" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581136478676" />
+    <state width="1515" height="208" key="GridCell.Tab.1.center" timestamp="1581136478676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="192" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1581063400597" />
-    <state width="1515" height="192" key="GridCell.Tab.1.left" timestamp="1581063400597">
+    <state width="1515" height="208" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1581136478676" />
+    <state width="1515" height="208" key="GridCell.Tab.1.left" timestamp="1581136478675">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="192" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1581063400597" />
-    <state width="1515" height="192" key="GridCell.Tab.1.right" timestamp="1581063400598">
+    <state width="1515" height="208" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1581136478675" />
+    <state width="1515" height="208" key="GridCell.Tab.1.right" timestamp="1581136478676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="192" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1581063400598" />
-    <state x="270" y="55" key="SettingsEditor" timestamp="1580786560020">
+    <state width="1515" height="208" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1581136478676" />
+    <state x="270" y="55" key="SettingsEditor" timestamp="1581135440094">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="270" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1580786560020" />
-    <state x="361" y="146" key="Vcs.Push.Dialog.v2" timestamp="1581001840777">
+    <state x="270" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1581135440094" />
+    <state x="361" y="146" key="Vcs.Push.Dialog.v2" timestamp="1581086177044">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="146" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1581001840777" />
+    <state x="361" y="146" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1581086177044" />
+    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1581134999670">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1581134999670" />
     <state x="449" y="237" key="com.intellij.ide.util.TipDialog" timestamp="1581035231488">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

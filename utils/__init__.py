@@ -15,7 +15,7 @@ import sys
 # os.environ['PATH'] = vips_home + ';' + os.environ['PATH']
 import pyvips
 
-__all__ = ['dict2header', 'generate_trace_id',
+__all__ = ['dict2header', 'generate_trace_id', 'get_print_string',
            'read_bytes_from_file', 'write_bytes_to_file',
            'thumbnail',
            'my_print']
@@ -95,6 +95,29 @@ def my_print_2(str_log):
     line_no = frame.f_back.f_lineno
     sz_log = "[{0}] {1} [{2},{3},{4}] {5}".format(pid, record_time, file_name, fun_name, line_no, str_log)
     print(sz_log)
+
+
+def get_print_string(msgs, limit_len=512):
+    if msgs is None:
+        return None
+    if limit_len < 256:
+        limit_len = 256
+    if isinstance(msgs, tuple):
+        lst = list()
+        for msg in msgs:
+            if msg and (type(msg) == bytes or type(msg) == bytearray) and len(msg) > limit_len:
+                lst.append(['too long, len is {}' .format(len(msg),), msg[:128], msg[-128:]])
+            else:
+                lst.append(msg)
+        return tuple(lst)
+    elif isinstance(msgs, dict):
+        d = dict()
+        for key, value in msgs.items():
+            if value and (type(value) == bytes or type(value) == bytearray) and len(value) > limit_len:
+                value = ['too long, len is {}' .format(len(value),), value[:128], value[-128:]]
+            d[key] = value
+        return d
+    return msgs
 
 
 my_print = my_print_2

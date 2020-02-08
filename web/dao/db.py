@@ -9,7 +9,7 @@
 =================================================="""
 import sqlite3
 from web.conf import Conf
-from utils import my_print
+from utils import *
 
 
 class DB(object):
@@ -91,7 +91,7 @@ class DB(object):
     def insert_one(self, sql, para, is_commit=True):
         if self.IS_PRINT_SQL:
             if para:
-                sz_sql = "{0} {1}".format(sql, para)
+                sz_sql = "{0} {1}".format(sql, get_print_string(para))
             else:
                 sz_sql = sql
             my_print(sz_sql)
@@ -102,7 +102,7 @@ class DB(object):
     def execute(self, sql, para=None, is_commit=True):
         if self.IS_PRINT_SQL:
             if para:
-                sz_sql = "{0} {1}".format(sql, para)
+                sz_sql = "{0} {1}".format(sql, get_print_string(para))
             else:
                 sz_sql = sql
             my_print(sz_sql)

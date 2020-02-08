@@ -38,7 +38,7 @@ def get_image(req: HttpRequest, code):
 
 
 def get_assets(req=None, code=None):
-    assets_impl = AssetsImpl(_db=req.my_db)
+    assets_impl = AssetsImpl(_db=req.my_db, _img_db=req.my_img_db)
     assets = assets_impl.get_assets_by_code(code=code)
     req.res_command = ResponseCode.OK
     op_type = Const.OpType.查询
@@ -98,13 +98,12 @@ def get_post_data(req: HttpRequest):
     image = paras.get("image", None)
     category = paras.get('category', None)
     _assets = dto.AssetsDto(code=code, name=name, memo=memo, image=image, category=category)
-    if Conf.is_print_req_paras:
-        my_print("paras: {}".format(paras,))
+
     return _user, _assets, reason, trace_id
 
 
 def do_post(req: HttpRequest):
-    assets_impl = AssetsImpl(_db=req.my_db)
+    assets_impl = AssetsImpl(_db=req.my_db, _img_db=req.my_img_db)
     if isinstance(req, HttpRequest):
         req.res_head['Content-Type'] = 'application/json; charset=UTF-8'
         _user, _assets, reason, trace_id = get_post_data(req)

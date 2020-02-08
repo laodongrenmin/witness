@@ -360,5 +360,11 @@ class HttpRequest(object):
             my_print("req_head:{0}".format( self._raw_head,))
         self.recv_body()
         if Conf.is_print_req_body:
-            my_print("req_body:{0}".format(self._raw_body,))
+            if len(self._raw_body) > 2800:
+                b = bytearray()
+                my_print(['req_body: too long, len is {}'.format(len(b)), b[:2048], b[-256:]])
+            else:
+                my_print("req_body:{0}".format(self._raw_body,))
+        if Conf.is_print_req_paras:
+            my_print(get_print_string(self.parameters))
         return self.pre()

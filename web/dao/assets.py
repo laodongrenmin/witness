@@ -33,10 +33,11 @@ class AssetsDao(object):
     img_create_sql = """CREATE TABLE IMAGES(
         ID INTEGER PRIMARY KEY, 
         CODE VARCHAR(40),
+        HEADER VARCHAR(256),
         IMAGE BLOB)
     """
-    img_insert_sql = "insert into images(id, code, image) values(?,?,?)"
-    img_query_sql = "select id, code, image from images"
+    img_insert_sql = "insert into images(id, code, header, image) values(?,?,?,?)"
+    img_query_sql = "select id, code, header, image from images"
 
     def __init__(self, _db: DB, _img_db: DB = None):
         self._db = _db
@@ -82,23 +83,23 @@ class AssetsDao(object):
         # 先只做适应一个图片的，以后有时间再做多个图像的
         rows = self._img_db.get_one(sql, paras=paras)
         if rows:
-            return rows[2]
-        return None
+            return rows[2], rows[3]
+        return None, None
 
     def insert_assets(self, code=None, user_id=None, user_name=None, assets_name=None,
                       assets_category=None, assets_memo=None, image=None, _assets=None, is_commit=False):
         if _assets and isinstance(_assets, AssetsDto):
-            src_image, thb_image = self.parse_image(_assets.image)
+            src_image, thb_image, header = self.parse_image(_assets.image)
             code = _assets.code
             para = (_assets.code, _assets.user_id, _assets.user_name, _assets.name, _assets.category,
                     _assets.memo, thb_image, time.time())
         else:
-            src_image, thb_image = self.parse_image(image)
+            src_image, thb_image, header = self.parse_image(image)
             para = (code, user_id, user_name, assets_name, assets_category, assets_memo, thb_image, time.time())
         sql = AssetsDao.insert_sql
         self._db.insert_one(sql=sql, para=para, is_commit=is_commit)
         # 图片保存缩略图到数据库里面，大图保存到另外的数据库或者文件系统里面
-        self._img_db.insert_one(sql=AssetsDao.img_insert_sql, para=(None, code, src_image))
+        self._img_db.insert_one(sql=AssetsDao.img_insert_sql, para=(None, code, header, src_image))
         return AssetsDto(para)
 
     @staticmethod
@@ -109,5 +110,5 @@ class AssetsDao(object):
                 src_image = tmp[1].rstrip(b'\r\n')
                 if len(src_image) > 0:
                     thb_image = thumbnail(src_image)
-                    return src_image, thb_image
+                    return src_image, thb_image, tmp[0]
         return None, None

@@ -3,6 +3,33 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>资产管理页面-添加资产</title>
+    <script type="text/javascript" src="/wtn/js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        function call_remote(req_url) {
+            my_data =  $("#content").val();
+            // alert(my_data);
+            $.ajax({
+                url: req_url,
+                type:"post",
+                contentType: "application/json; charset=utf-8",
+                data: my_data,
+                dataType: "json",
+                success:function(response){
+                    alert(JSON.stringify(response))
+                    if (response.code == 'success'){
+                        eco_refresh();
+                    }
+                },
+                error:function(e){
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
+
+        function assets() {
+        }
+    </script>
+
 </head>
 <body>
 <form id="assetsInfo" name="assetsInfo" method="post" action="/wtn/assets_add" enctype="multipart/form-data">
@@ -20,9 +47,9 @@
 
     <tr><td>跟踪号</td><td><input type="text" id="trace_id" name="trace_id" value="0000000001"></td></tr>
 
-    <tr><td colspan="2"><input type="submit" value="新建资产"></td></tr>
+    <tr><td colspan="2"><input type="submit" value="新建资产"><button name="my_own_assets" value="我的资产" onclick="javascript: get_my_own_assets()"></button></td></tr>
     </table>
 </form>
-
+<div id="result"></div>
 </body>
 </html>

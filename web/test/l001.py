@@ -29,7 +29,7 @@ if __name__ == '__main__':
     t = time.time()
     img = pyvips.Image.new_from_file(file_path, shrink=1)
     img.write_to_file(dst_file_path, Q=75)
-    # img.write_to_file(png_path)
+    img.write_to_file(png_path)
     t = time.time() - t
     print(t)
     exit(0)

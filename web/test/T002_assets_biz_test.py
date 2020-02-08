@@ -14,7 +14,7 @@ from web.dao.init_db import create_db, create_table
 from web.biz.assets import AssetsImpl
 from web.biz.constant import Const
 from web.test import *
-from utils import my_print, generate_trace_id
+from utils import *
 from web.conf import Conf
 
 
@@ -53,12 +53,7 @@ def _show_db(file_path):
             cur.execute("select * from %s" % table_name)
             rows = cur.fetchone()
             while rows:
-                rows_print = list()
-                for row in rows:
-                    if row and (type(row) == bytearray or type(row) == bytes) and len(row) > 4096:
-                        rows_print.append(r'too long, len is {}'.format(len(row)))
-                    else:
-                        rows_print.append(row)
+                rows_print = get_print_string(rows, 4096)
                 my_print(rows_print)
                 rows = cur.fetchone()
             t_rows = t_cur.fetchone()
