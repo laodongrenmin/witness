@@ -140,8 +140,11 @@ def tcp_link(sock, addr, alive_sock_queue, _db, _img_db):
     req = HttpRequest(sock, addr, _db=_db, _img_db=_img_db, trace_id=exception_trace_id)
     need_send = False
     try:
-        need_send = req.do()
+        success = req.do()
+        if success:   # 成功的请求，以后可以缓存
+            pass
         has_exception = False
+        need_send = True
     except Exception as e:
         tb = traceback.format_exc()
         if str(e).find('client socket closed.') != -1:
@@ -164,11 +167,15 @@ def tcp_link(sock, addr, alive_sock_queue, _db, _img_db):
         need_send = True
 
     if need_send:
+        if req.res_body is None or 0 == len(req.res_body):
+            my_print("trace_id:{} header:{} body:{}".format(req.trace_id, req._raw_head, get_print_string(req._raw_body)))
+            req.res_body = 'UNKNOWN ERROR,trace_id:{} req.trace_id:{}'.format(
+                req.trace_id, req.parameters.get('trace_id', None)).encode('utf-8')
+            req.res_command = b"HTTP/1.1 500 OK\r\n"
         req.res_head['Content-Length'] = str(len(req.res_body))
         response_header = dict2header(req.res_head).encode('UTF-8')
-        # print(req.res_command)
-        # print(response_header)
-        # print(req.res_body)
+        if Conf.get('is_save_response'):
+            write_to_file(Conf.get('save_response_file_path'), req.get_res_data())
         sock.sendall(req.res_command)
         sock.sendall(response_header)
         sock.sendall(req.res_body)

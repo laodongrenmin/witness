@@ -15,11 +15,11 @@ from web.dao.note import NoteDao
 from web.dao.notehis import NoteHisDao
 from web.dao.user import UserDao
 
-__all__ = ['close_db', 'rollback',
+__all__ = ['close_db', 'rollback', 'commit',
            'insert_log',
-           'get_assets_by_code', 'get_assets_by_user_id', 'insert_assets',
+           'get_assets_by_code', 'get_assets_by_user_id', 'insert_assets', 'update_assert_status',
            'insert_my_assets', 'update_my_assets_status', 'get_my_assets',
-           'get_user_by_login_name', 'get_user_by_id', 'get_user_by_login_name',
+           'get_user_by_login_name', 'get_user_by_id',
            'get_note_by_assets_code', 'del_note_by_id',
            'insert_note_his']
 
@@ -33,6 +33,10 @@ def rollback(_db: DB):
     _db.rollback()
 
 
+def commit(_db: DB):
+    _db.commit()
+
+
 # --------------------  _log     -----------------------------
 def insert_log(_db: DB, user_id=None, user_name=None, op_type=None, assets_code=None, assets_name=None,
                _log=None, is_commit=False):
@@ -42,6 +46,11 @@ def insert_log(_db: DB, user_id=None, user_name=None, op_type=None, assets_code=
 
 
 # --------------------  assets  -----------------------------
+def get_assets(_db, code=None, login_name=None, user_id=None, limit=10, offset=0):
+    assets_dao = AssetsDao(_db=_db)
+    return assets_dao.get_assets(code=code, login_name=login_name, user_id=user_id, limit=limit, offset=offset)
+
+
 def get_assets_by_code(_db, code: str):
     assets_dao = AssetsDao(_db)
     return assets_dao.get_assets_by_code(code=code)
@@ -57,27 +66,35 @@ def get_assets_image_by_code(_img_db, code, _db=None):
     return assert_dao.get_assets_image_by_code(code=code)
 
 
-def insert_assets(_db, _img_db, code=None, user_id=None, user_name=None, assets_name=None,
+def insert_assets(_db, _img_db, code=None, user_id=None, user_name=None, user_mobile=None, assets_name=None,
                   assets_category=None, assets_memo=None, image=None, _assets=None, is_commit=False):
     assets_dao = AssetsDao(_db, _img_db)
-    return assets_dao.insert_assets(code=code, user_id=user_id, user_name=user_name, assets_name=assets_name,
-                                    assets_category=assets_category, assets_memo=assets_memo, image=image,
-                                    _assets=_assets, is_commit=is_commit)
+    return assets_dao.insert_assets(code=code, user_id=user_id, user_name=user_name, user_mobile=user_mobile,
+                                    assets_name=assets_name, assets_category=assets_category, assets_memo=assets_memo,
+                                    image=image, _assets=_assets, is_commit=is_commit)
+
+
+def update_assert_status(_db, code=None, user_id=None, user_name=None, user_mobile=None,
+                         src_status=None, dst_status=None, is_commit=False):
+    assets_dao = AssetsDao(_db)
+    return assets_dao.update_assert_status(code=code, user_id=user_id, user_name=user_name, user_mobile=user_mobile,
+                                           src_status=src_status, dst_status=dst_status, is_commit=is_commit)
 
 
 # --------------------  my assets  -----------------------------
-def insert_my_assets(_db, assets_code=None, assets_name=None, assets_memo=None,
-                     user_id=None, user_name=None,
-                     _user=None, _assets=None, is_commit=False):
+def insert_my_assets(_db, assets_code=None, user_id=None, is_commit=False):
     my_assets_dao = MyAssetsDao(_db)
-    my_assets_dao.insert_my_assets(assets_code=assets_code, assets_name=assets_name, assets_memo=assets_memo,
-                                   user_id=user_id, user_name=user_name,
-                                   _user=_user, _assets=_assets, is_commit=is_commit)
+    my_assets_dao.insert_my_assets(assets_code=assets_code, user_id=user_id, is_commit=is_commit)
 
 
-def get_my_assets(_db, assets_code=None, user_id=None):
+def is_my_mng_assets(_db, user_id=None, assets_code=None):
     my_assets_dao = MyAssetsDao(_db)
-    return my_assets_dao.get_my_assets(assets_code=assets_code, user_id=user_id)
+    return my_assets_dao.is_my_mng_assets(user_id=user_id, assets_code=assets_code)
+
+
+def get_my_assets(_db, user_id=None):
+    my_assets_dao = MyAssetsDao(_db)
+    return my_assets_dao.get_my_assets(user_id=user_id)
 
 
 def update_my_assets_status(_db, code=None, status=None):

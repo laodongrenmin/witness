@@ -27,6 +27,17 @@ class Conf(object):
 
     db_file_path_img = 'my_sqlite3_img.db'
 
+    # -------------------- app -----------------------------------
+    # 是否把返回的报文保存到文件
+    is_save_response = True
+    save_response_file_path = 'response.log'
+
+    @staticmethod
+    def get(para_name, default=None):
+        if para_name in Conf.__dict__.keys():
+            return Conf.__dict__[para_name]
+        return default
+
     # ----------------------  router  ---------------------------
     # 路由，请求Url和处理模块的对应关系
     # 模块需要实现 do_post ， do_get 方法
@@ -34,8 +45,8 @@ class Conf(object):
     router = {
         root_url + '/assets': 'web.servlet.assets',
         root_url + '/assets_add': 'web.servlet.assets',
+        root_url + '/assets_list': 'web.servlet.assets',
             }
-
 
 # '/wtn/witness': 'web.witness',
 #             '/wtn/assets_add': 'web.assets_add',

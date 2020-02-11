@@ -11,18 +11,19 @@ import web.dto as dto
 from request import HttpRequest
 from web.dao.db import DB
 import os
+import time
 from web.conf import Conf
 
 __all__ = [
-           'get_test_db', 'get_test_img_db',
+           'get_test_db', 'get_test_img_db', 'get_trace_id',
            'get_test_user_dto', 'get_test_book_assets_dto',
            'get_test_request',
            'get_borrow_reason']
 
 
 def get_test_user_dto():
-    return dto.UserDto(login_name='login_name_0001', name='admin', status='0',
-                       memo='ccb_ft', mobile='18999999999')
+    return dto.UserDto(pid=1, login_name='login_name_0001', name='admin', mobile="18995533533",
+                       status=0, depart='建信金科/武汉事业群/架构服务团队', org='0000100001', memo='测试用户admin')
 
 
 def get_test_book_assets_dto():
@@ -39,19 +40,21 @@ def get_test_book_assets_dto():
     image[len(image):] = b
     image[len(image):] = b'\r\n'
 
-    return dto.AssetsDto(code='A8888', user_id=0, user_name='admin',
-                         name='图书', category='类别一', memo='很牛的书', image=image)
+    return dto.AssetsDto(code='A8888', user_id=1, user_name='admin',
+                         name='图书', category='类别一', memo='很牛的书', image=image,
+                         dst_user_id=1, dst_user_name='admin', dst_user_mobile='18995533533',
+                         status=0, op_time=time.time())
 
 
 def get_test_db():
     _db = DB(Conf.db_file_path_rw)
-    _db.IS_PRINT_SQL = False
+    _db.IS_PRINT_SQL = True
     return _db
 
 
 def get_test_img_db():
     _db = DB(Conf.db_file_path_img)
-    _db.IS_PRINT_SQL = False
+    _db.IS_PRINT_SQL = True
     return _db
 
 
@@ -62,14 +65,17 @@ def get_test_request():
     paras = req.parameters
     _user = get_test_user_dto()
     # 前端或者前序流程中（比如测试案例）没有上送跟踪号，就生成跟踪号
-    paras['trace_id'] = 'generate_trace_id_999999'
+    paras['trace_id'] = get_trace_id()
     paras['reason'] = 'overtime'
     paras['userInfo'] = dict()
     user_info = paras['userInfo']
     user_info['login_name'] = _user.login_name
     user_info['name'] = _user.name
-    user_info['dept_name'] = _user.memo
+    user_info['dept_name'] = _user.depart
     user_info['mobile'] = _user.mobile
+    user_info['memo'] = _user.memo
+    user_info['org'] = _user.org
+    user_info['id'] = _user.id
 
     _assets = get_test_book_assets_dto()
 
@@ -83,4 +89,8 @@ def get_test_request():
 
 def get_borrow_reason():
     return 'overtime'
+
+
+def get_trace_id():
+    return 'generate_trace_id_999999'
 

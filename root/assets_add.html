@@ -5,19 +5,19 @@
     <title>资产管理页面-添加资产</title>
     <script type="text/javascript" src="/wtn/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript">
-        function call_remote(req_url) {
-            my_data =  $("#content").val();
+        function get_my_own_assets() {
+            req_url = "/wtn/assets_list?limit=2&offset=0&action=get_assets"
+            my_data = 'userInfo.login_name=' + $("[id='userInfo.login_name']").val();
             // alert(my_data);
             $.ajax({
                 url: req_url,
-                type:"post",
+                type: "get",
                 contentType: "application/json; charset=utf-8",
                 data: my_data,
                 dataType: "json",
                 success:function(response){
-                    alert(JSON.stringify(response))
-                    if (response.code == 'success'){
-                        eco_refresh();
+                    if (response.status == 0){
+                        eco_refresh(response);
                     }
                 },
                 error:function(e){
@@ -26,7 +26,21 @@
             });
         }
 
-        function assets() {
+        function eco_refresh(response) {
+            //alert(JSON.stringify(response))
+            $("[id='ori_result'").html(JSON.stringify(response))
+            html = "count:" + response.assets.count + "<br><table border='1'><tr><td>代码</td><td>名称</td><td>缩略图片</td></tr>"
+            assets = response.assets.assets
+            for(i=0;i< assets.length;i++){
+                if (assets[i].image != null){
+                    img_html = "<a href='"+ assets[i].image_url + "' target='view_window'><img src='" + assets[i].image + "' alt='缩略图显示'></a>"
+                }else{
+                    img_html = "没有图片"
+                }
+                html += "<tr><td>"+assets[i].code+"</td><td>"+ assets[i].name +"</td><td>"+img_html+"</td></tr>"
+            }
+            html += "</table>"
+            $("[id='result']").html(html)
         }
     </script>
 
@@ -47,9 +61,11 @@
 
     <tr><td>跟踪号</td><td><input type="text" id="trace_id" name="trace_id" value="0000000001"></td></tr>
 
-    <tr><td colspan="2"><input type="submit" value="新建资产"><button name="my_own_assets" value="我的资产" onclick="javascript: get_my_own_assets()"></button></td></tr>
+    <tr><td colspan="2"><input type="submit" value="新建资产"></td></tr>
     </table>
 </form>
+<button name="my_own_assets" value="我拥有的资产" onclick="javascript: get_my_own_assets()">我拥有的资产</button>
 <div id="result"></div>
+<div id="ori_result"></div>
 </body>
 </html>

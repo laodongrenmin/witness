@@ -27,5 +27,5 @@ class LogImpl(object):
         self._dao.insert_log(self._db, user_id=user_id, user_name=user_name, op_type=op_type, assets_code=assets_code,
                              assets_name=assets_name, _log=_log, is_commit=is_commit)
         if is_print:
-            str_log = "user: {0} type: {1} assets: {2}({3}}) _log: {4}".format(user_id, op_type, assets_name, assets_code, _log)
+            str_log = "user: {0} type: {1} assets: {2}({3}) _log: {4}".format(user_id, op_type, assets_name, assets_code, _log)
             my_print(str_log)

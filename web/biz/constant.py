@@ -19,6 +19,11 @@ class Const:
         生成借条 = 8
         查询 = 16
 
+    class AssetsStatus(Enum):
+        未借出 = 0
+        已借出 = 2
+        已归还 = 4
+
     class OpStatus(Enum):
         成功 = 0
         失败 = 1

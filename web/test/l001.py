@@ -13,7 +13,7 @@ import os
 import pyvips
 import time
 
-if __name__ == '__main__':
+if __name__ == '__main__1':
 
     print(os.environ['PATH'])
     file_path = os.path.join(os.path.dirname(__file__), r'res\d.jpg')
@@ -32,4 +32,27 @@ if __name__ == '__main__':
     img.write_to_file(png_path)
     t = time.time() - t
     print(t)
+
+
+def get_data(*args):
+    print(len(args))
+    for arg in args:
+        print(arg)
+        for a in arg:
+            print(a)
+
+
+def g():
+    return 'a','b'
+
+def f():
+    return 'a', 'b', 'c'
+
+if __name__ == '__main__':
+    get_data(g())
+    get_data(f())
+
+    get_data(g(), f())
+
+
     exit(0)

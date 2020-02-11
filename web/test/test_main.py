@@ -8,17 +8,23 @@
 @Desc   ：
 =================================================='''
 import unittest
-from web.test import *
+import os
+import BeautifulReport
 
-project_path = r"/"
+if __name__ == "__main__1":
 
-if __name__ == "__main__":
-
-    set_print_sql_flag(False)
     # 测试用例保存的目录
-    case_dirs = project_path + r"\web\test"
+    case_dirs = os.path.dirname(__file__)
     # 加载测试用例
     discover = unittest.defaultTestLoader.discover(case_dirs, "*_test.py")
     # 运行测试用例
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(discover)
+
+if __name__ == '__main__':
+    suite = unittest.TestSuite()
+    all_py = unittest.defaultTestLoader.discover(os.path.dirname(__file__), "T*_test.py")
+    # # discover()方法会自动根据测试目录匹配查找测试用例文件（*.py）,并将查找到的测试用例组装到测试套件中
+    [suite.addTests(py) for py in all_py]  # 列表生成式，添加文件里面的case到测试集合里面
+    report_html = BeautifulReport.BeautifulReport(suite)
+    report_html.report(filename='测试报告', description='测试报告')

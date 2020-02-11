@@ -35,7 +35,10 @@ class LogDao(object):
 
     def insert_log(self, user_id=None, user_name=None, op_type=None,
                    assets_code=None, assets_name=None, _log=None, is_commit=False):
-        if user_id and _log:
+        try:
             para = (None, user_id, user_name, op_type, assets_code, assets_name, _log, time.time(),)
-            self._db.insert_one(LogDao.insert_sql, para, is_commit)
+            self._db.insert_one(LogDao.insert_sql, para, False)
+        finally:
+            if is_commit:      # 日志插入失败也要保证业务事务提交
+                self._db.commit()
 

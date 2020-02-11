@@ -186,6 +186,12 @@ class HttpRequest(object):
         self.res_head = dict()
         self.res_body = None
 
+    def get_req_data(self):
+        return self._raw_head, self._raw_body
+
+    def get_res_data(self):
+        return self.res_command, self.res_head, self.res_body
+
     def parse_head(self, line):
         line = line.decode('UTF-8').strip('\r\n')
         k_v = line.split(': ', 1)
@@ -282,7 +288,7 @@ class HttpRequest(object):
 
         mimi_type = {
             ".html": "text/html", ".htm": "text/html",
-            ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+            ".jpg": "image/jpeg", ".jpeg": "image/jpeg", "png": "image/png",
             ".ico": "image/x-icon", ".js": "application/x-javascript"
         }
         path = os.path.join(os.path.split(os.path.realpath(__file__))[0], "root")
@@ -324,15 +330,17 @@ class HttpRequest(object):
         self.res_head['Connection'] = keep_alive  # 'Keep-Alive' or 'Close' 需要检查报文头，是close，还是keep-Alive
         cookie = self.req_head.get('Cookie', '')
         my_print('req cookie: {}'.format(cookie,))
-        session_id = generate_trace_id()
+        session_id = None
         if cookie:
             tmp = re.findall('PySessionId=[a-f0-9]{30,40}', cookie, re.I)
             if len(tmp) > 0:
                 session_id = re.sub('PySessionId=', '', tmp[0], re.I)
-
-        cookie = 'PySessionId={};HttpOnly;max-age=120'.format(session_id)
-        self.res_head['Set-Cookie'] = cookie
-        my_print('res cookie: {}'.format(self.res_head['Set-Cookie']))
+        if session_id is None:
+            session_id = generate_trace_id()
+            cookie = 'PySessionId={};HttpOnly;max-age=120'.format(session_id)
+            self.res_head['Set-Cookie'] = cookie
+            my_print('res cookie: {}'.format(self.res_head['Set-Cookie']))
+        my_print('session_id: {}'.format(session_id))
 
         m = Conf.router.get(self.command.path, None)
         # 没有配置，当静态资源直接打开文件返回了
