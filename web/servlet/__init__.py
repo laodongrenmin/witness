@@ -49,7 +49,8 @@ def get_post_data(req: HttpRequest):
     memo = paras.get("memo", None)
     image = paras.get("image", None)
     category = paras.get('category', None)
-    _assets = dto.AssetsDto(code=code, name=name, memo=memo, image=image, category=category)
+    limit_time = paras.get('limit_time', None)
+    _assets = dto.AssetsDto(code=code, name=name, memo=memo, image=image, category=category, limit_time=limit_time)
 
     return _user, _assets, reason, trace_id
 

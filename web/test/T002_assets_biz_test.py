@@ -40,6 +40,29 @@ def show_db(*args, **kwargs):
         _show_db(Conf.db_file_path_img)
 
 
+def _show_table_desc(conn, table_name):
+    sql = 'PRAGMA table_info({})'.format(table_name)
+    cur = conn.cursor()
+    cur.execute(sql)
+    rows = cur.fetchone()
+    while rows:
+        rows_print = get_print_string(rows, 4096, True)
+        my_print(rows_print)
+        rows = cur.fetchone()
+    cur.close()
+
+
+def _show_table_content(conn, table_name):
+    cur = conn.cursor()
+    cur.execute("select * from %s" % table_name)
+    rows = cur.fetchone()
+    while rows:
+        rows_print = get_print_string(rows, 4096, True)
+        my_print(rows_print)
+        rows = cur.fetchone()
+    cur.close()
+
+
 def _show_db(file_path):
     with sqlite3.connect(database=file_path) as conn:
         query_table_sql = "select name from sqlite_master where type='table'"
@@ -49,13 +72,8 @@ def _show_db(file_path):
         while t_rows:
             table_name = t_rows[0]
             my_print('-' * 15 + file_path + '(' + table_name + ')' + '-' * 15)
-            cur = conn.cursor()
-            cur.execute("select * from %s" % table_name)
-            rows = cur.fetchone()
-            while rows:
-                rows_print = get_print_string(rows, 4096)
-                my_print(rows_print)
-                rows = cur.fetchone()
+            _show_table_desc(conn, table_name)
+            _show_table_content(conn, table_name)
             t_rows = t_cur.fetchone()
 
 
@@ -66,6 +84,7 @@ class AssetsImplTestCase(unittest.TestCase):
         self.userDto = get_test_user_dto()
         self.assetsDto = get_test_book_assets_dto()
         self.assets_reason = get_borrow_reason()
+        self.return_assets_reason = get_return_reason()
         self.trace_id = get_trace_id()
         self.me.set_db(get_test_db(), get_test_img_db())
 
@@ -209,7 +228,7 @@ class AssetsImplTestCase(unittest.TestCase):
         _user = dao.get_user_by_login_name(self.me._db, self.userDto.login_name)
         status, op_type, message = \
             self.me.do_biz(assets_code=self.assetsDto.code,
-                           assets_reason=self.assets_reason,
+                           assets_reason=self.return_assets_reason,
                            _user=_user,
                            trace_id=self.trace_id)
 

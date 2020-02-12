@@ -10,6 +10,7 @@
 import sqlite3
 from web.conf import Conf
 from utils import *
+import traceback
 
 
 class DB(object):
@@ -75,7 +76,7 @@ class DB(object):
         cur.close()
         return row
 
-    def get_all(self, sql, para):
+    def get_all(self, sql, para=None):
         if self.IS_PRINT_SQL:
             if para:
                 sz_sql = "{0} {1}".format(sql, para)
@@ -83,7 +84,10 @@ class DB(object):
                 sz_sql = sql
             my_print(sz_sql)
         cur = self.conn.cursor()
-        cur.execute(sql, para)
+        if para is None:
+            cur.execute(sql)
+        else:
+            cur.execute(sql, para)
         rows = cur.fetchall()
         cur.close()
         return rows
@@ -121,4 +125,9 @@ class DB(object):
             self.commit()
             # print('创建表 %s 成功' % sql)
         except sqlite3.OperationalError as e:
-            print(e)
+            my_print(''.format(e, traceback.format_exc()))
+            raise e
+
+    def dscr_table(self, table_name):
+        sql = 'PRAGMA table_info({})'.format(table_name)
+        return self.get_all(sql)

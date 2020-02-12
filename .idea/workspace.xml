@@ -2,31 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b7f65bba-b688-4b00-9bd7-79a07fc14f7b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/web/servlet/assets_add.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phserver.py" beforeDir="false" afterPath="$PROJECT_DIR$/phserver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/request.py" beforeDir="false" afterPath="$PROJECT_DIR$/request.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/root/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/root/404.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/root/assets_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/root/assets_add.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/biz/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/biz/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/biz/constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/biz/constant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/biz/log.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/biz/log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/conf/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/conf/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/dao/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/dao/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/dao/log.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/init_db.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/dao/my_assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/my_assets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/note.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/note.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/notehis.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/notehis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dao/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dao/user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/dto/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/dto/myassets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/myassets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/dto/note.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/dto/note.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/servlet/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/servlet/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/servlet/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/servlet/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test/T001_utils_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/T001_utils_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/test/T002_assets_biz_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/T002_assets_biz_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/test/T003_assets_servlet_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/T003_assets_servlet_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/test/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test/l001.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/l001.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test/test_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/test/test_main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,27 +72,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Python tests.Unittests in T002_assets_biz_test.py">
-    <configuration name="l001" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Server" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/test" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/test/l001.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="phserver" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Server" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -122,7 +93,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in T001_utils_test.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="test_main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Server" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/test/test_main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests for T002_assets_biz_test.AssetsImplTestCase.test_00400_do_biz" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="Server" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -132,8 +124,8 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/web/test/T001_utils_test.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;T002_assets_biz_test.AssetsImplTestCase.test_00400_do_biz&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="Unittests in T002_assets_biz_test.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
@@ -150,12 +142,27 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Unittests in T003_assets_servlet_test.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="Server" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/web/test/T003_assets_servlet_test.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python tests.Unittests in T002_assets_biz_test.py" />
+        <item itemvalue="Python tests.Unittests in T003_assets_servlet_test.py" />
+        <item itemvalue="Python.test_main" />
+        <item itemvalue="Python tests.Unittests for T002_assets_biz_test.AssetsImplTestCase.test_00400_do_biz" />
         <item itemvalue="Python.phserver" />
-        <item itemvalue="Python.l001" />
-        <item itemvalue="Python tests.Unittests in T001_utils_test.py" />
       </list>
     </recent_temporary>
   </component>
@@ -191,14 +198,22 @@
       <option name="project" value="LOCAL" />
       <updated>1581158880709</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="完成重构后的借资产">
+      <created>1581421461446</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1581421461446</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="准备修改图片保存缩略图以及图片原始图与资产库分离" />
     <MESSAGE value="完成图片保存缩略图以及图片原始图与资产库分离，通过添加专门保存图像的数据库" />
     <MESSAGE value="查询接口完成缩略图baser64编码，到前端可以直接显示" />
-    <option name="LAST_COMMIT_MESSAGE" value="查询接口完成缩略图baser64编码，到前端可以直接显示" />
+    <MESSAGE value="完成重构后的借资产" />
+    <option name="LAST_COMMIT_MESSAGE" value="完成重构后的借资产" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="71" key="#Notifications" timestamp="1580869888323">
@@ -225,10 +240,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="477" y="25" key="#test_main/0.0.1536.824@0.0.1536.824" timestamp="1580782629716" />
-    <state x="409" y="6" key="CommitChangelistDialog2" timestamp="1581158879259">
+    <state x="409" y="6" key="CommitChangelistDialog2" timestamp="1581421460642">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="409" y="6" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1581158879259" />
+    <state x="409" y="6" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1581421460642" />
     <state width="771" height="464" key="DebuggerActiveHint" timestamp="1581323888684">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -241,71 +256,66 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="168" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1580871281004" />
-    <state width="1515" height="276" key="GridCell.Tab.0.bottom" timestamp="1581421274982">
+    <state width="1515" height="259" key="GridCell.Tab.0.bottom" timestamp="1581521175830">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="276" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581421274982" />
-    <state width="1515" height="276" key="GridCell.Tab.0.center" timestamp="1581421274982">
+    <state width="1515" height="259" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581521175830" />
+    <state width="1515" height="259" key="GridCell.Tab.0.center" timestamp="1581521175830">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="276" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581421274982" />
-    <state width="1515" height="276" key="GridCell.Tab.0.left" timestamp="1581421274982">
+    <state width="1515" height="259" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581521175830" />
+    <state width="1515" height="259" key="GridCell.Tab.0.left" timestamp="1581521175830">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="276" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581421274982" />
-    <state width="1515" height="276" key="GridCell.Tab.0.right" timestamp="1581421274982">
+    <state width="1515" height="259" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581521175830" />
+    <state width="1515" height="259" key="GridCell.Tab.0.right" timestamp="1581521175830">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="276" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581421274982" />
-    <state width="1515" height="166" key="GridCell.Tab.1.bottom" timestamp="1581417987096">
+    <state width="1515" height="259" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581521175830" />
+    <state width="1515" height="87" key="GridCell.Tab.1.bottom" timestamp="1581517558271">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="166" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581417987096" />
-    <state width="1515" height="166" key="GridCell.Tab.1.center" timestamp="1581417987096">
+    <state width="1515" height="87" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581517558271" />
+    <state width="1515" height="87" key="GridCell.Tab.1.center" timestamp="1581517558271">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="166" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1581417987096" />
-    <state width="1515" height="166" key="GridCell.Tab.1.left" timestamp="1581417987096">
+    <state width="1515" height="87" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1581517558271" />
+    <state width="1515" height="87" key="GridCell.Tab.1.left" timestamp="1581517558271">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="166" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1581417987096" />
-    <state width="1515" height="166" key="GridCell.Tab.1.right" timestamp="1581417987096">
+    <state width="1515" height="87" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1581517558271" />
+    <state width="1515" height="87" key="GridCell.Tab.1.right" timestamp="1581517558271">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="166" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1581417987096" />
+    <state width="1515" height="87" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1581517558271" />
     <state x="270" y="55" key="SettingsEditor" timestamp="1581254530932">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="270" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1581254530932" />
-    <state x="361" y="146" key="Vcs.Push.Dialog.v2" timestamp="1581159015423">
+    <state x="361" y="146" key="Vcs.Push.Dialog.v2" timestamp="1581421487887">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="146" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1581159015423" />
-    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1581236330375">
+    <state x="361" y="146" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1581421487887" />
+    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1581511072621">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1581236330375" />
-    <state x="449" y="237" key="com.intellij.ide.util.TipDialog" timestamp="1581035231488">
+    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1581511072621" />
+    <state x="449" y="237" key="com.intellij.ide.util.TipDialog" timestamp="1581509324918">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="449" y="237" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1581035231488" />
+    <state x="449" y="237" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1581509324918" />
     <state x="462" y="204" key="git4idea.merge.GitPullDialog" timestamp="1580781815344">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="462" y="204" key="git4idea.merge.GitPullDialog/0.0.1536.824@0.0.1536.824" timestamp="1580781815344" />
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1581066009910">
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1581519464300">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1581066009910" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1581519464300" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/web/test/T002_assets_biz_test.py</url>
-          <line>154</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/web/test/l001.py</url>
           <line>57</line>

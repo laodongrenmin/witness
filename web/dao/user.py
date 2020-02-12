@@ -18,7 +18,7 @@ class UserDao(object):
             NAME VARCHAR(40) NOT NULL,
             MOBILE VARCHAR(40),
             STATUS INT,  --0 正常 1 删除
-            DEPART VARCHAR(100), -- 文字
+            DEPART VARCHAR(256), -- 文字   金科/武汉事业群/架构
             ORG VARCHAR(40), -- 代号     （ 00001， 金科/武汉事业群； 00001， 金科/武汉事业群/架构； 
             MEMO TEXT(500))"""
     insert_sql = "insert into user(id,login_name,name,mobile,status,depart,org,memo) values(?,?,?,?,?,?,?,?)"

@@ -29,3 +29,8 @@ def create_table(_db, _img_db):
     AssetsDao(_db, _img_db).create_table()
     MyAssetsDao(_db).create_table()
     NoteHisDao(_db).create_table()
+
+
+def dscr_table(_db):
+    cursor = _db.conn
+    cursor.execute('PRAGMA table_info(perpetualCalendar)')

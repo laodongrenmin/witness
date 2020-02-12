@@ -18,7 +18,7 @@ __all__ = [
            'get_test_db', 'get_test_img_db', 'get_trace_id',
            'get_test_user_dto', 'get_test_book_assets_dto',
            'get_test_request',
-           'get_borrow_reason']
+           'get_borrow_reason', 'get_return_reason']
 
 
 def get_test_user_dto():
@@ -43,7 +43,7 @@ def get_test_book_assets_dto():
     return dto.AssetsDto(code='A8888', user_id=1, user_name='admin',
                          name='图书', category='类别一', memo='很牛的书', image=image,
                          dst_user_id=1, dst_user_name='admin', dst_user_mobile='18995533533',
-                         status=0, op_time=time.time())
+                         status=0, op_time=time.time(), limit_time=3*24*60*60)
 
 
 def get_test_db():
@@ -84,11 +84,16 @@ def get_test_request():
     paras["memo"] = _assets.memo
     paras["image"] = _assets.image
     paras['category'] = _assets.category
+    paras['limit_time'] = _assets.limit_time
     return req
 
 
 def get_borrow_reason():
     return 'overtime'
+
+
+def get_return_reason():
+    return 'return reason delay because NCP'
 
 
 def get_trace_id():

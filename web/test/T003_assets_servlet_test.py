@@ -9,6 +9,7 @@
 =================================================="""
 import unittest
 import web.servlet.assets as servlet_assets
+import web.servlet.assets_add as servlet_assets_add
 from utils import my_print
 from web.test import *
 from web.biz.constant import Const
@@ -25,10 +26,8 @@ class AssetsServletTestCase(unittest.TestCase):
         self.req.parameters['code'] = AssetsServletTestCase.assets_code  # 'A8888_9'
 
     def test_00100_do_get_assets(self):
-        """
-        根据资产代码不能找到记录
-        """
-        my_print("测试不能找到记录")
+        """根据资产代码不能找到记录"""
+        my_print('准备测试：' + self.test_00100_do_get_assets.__doc__)
         self.req.parameters["action"] = 'get_assets'
         b_ret = servlet_assets.do_get(self.req)
 
@@ -40,11 +39,9 @@ class AssetsServletTestCase(unittest.TestCase):
                          d.get('message'), '返回消息')
 
     def test_00200_do_post(self):
-        """
-        成功创建资产，附件方式
-        """
-        my_print("测试创建资产")
-        b_ret = servlet_assets.do_post(self.req)
+        """成功创建资产，附件方式"""
+        my_print('准备测试：' + self.test_00200_do_post.__doc__)
+        b_ret = servlet_assets_add.do_post(self.req)
 
         d = dict()
         d.update(json.loads(self.req.res_body.decode('UTF-8')))
@@ -54,13 +51,11 @@ class AssetsServletTestCase(unittest.TestCase):
                          d.get('message'), '返回消息')
 
     def test_00201_do_post(self):
-        """
-        成功创建资产，不带附件方式
-        """
-        my_print("测试创建资产")
+        """成功创建资产，不带附件方式"""
+        my_print('准备测试：' + self.test_00201_do_post.__doc__)
         self.req.parameters['image'] = None
         self.req.parameters['code'] = AssetsServletTestCase.assets_code_no_attach
-        b_ret = servlet_assets.do_post(self.req)
+        b_ret = servlet_assets_add.do_post(self.req)
 
         d = dict()
         d.update(json.loads(self.req.res_body.decode('UTF-8')))
@@ -71,10 +66,8 @@ class AssetsServletTestCase(unittest.TestCase):
                          d.get('message'), '返回消息')
 
     def test_00300_do_get_assets(self):
-        """
-        根据资产代码能找到记录
-        """
-        my_print("测试 能够找到记录")
+        """根据资产代码能找到记录"""
+        my_print('准备测试：' + self.test_00300_do_get_assets.__doc__)
         self.req.parameters["action"] = 'get_assets'
         b_ret = servlet_assets.do_get(self.req)
 
@@ -86,10 +79,8 @@ class AssetsServletTestCase(unittest.TestCase):
                          d.get('message'), '消息')
 
     def test_00400_do_get_image(self):
-        """
-        根据资产代码能找到原始图片
-        """
-        my_print("测试 能够找到原始图片")
+        """根据资产代码能找到原始图片"""
+        my_print('准备测试：' + self.test_00400_do_get_image.__doc__)
         self.req.parameters["action"] = 'get_image'
         b_ret = servlet_assets.do_get(self.req)
         self.assertEqual(b_ret, True, '执行成功，找到图片')
@@ -97,10 +88,8 @@ class AssetsServletTestCase(unittest.TestCase):
         self.assertEqual(self.req.res_body[-2:], b'\xff\xd9')
 
     def test_00401_do_get_image(self):
-        """
-        根据资产代码能找到记录，但是没有图片
-        """
-        my_print("测试 不能够找到原始图片")
+        """根据资产代码能找到记录，但是没有图片"""
+        my_print('准备测试：' + self.test_00401_do_get_image.__doc__)
         self.req.parameters["action"] = 'get_image'
         self.req.parameters['code'] = AssetsServletTestCase.assets_code_no_attach
         b_ret = servlet_assets.do_get(self.req)

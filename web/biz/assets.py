@@ -13,6 +13,8 @@ from web.biz.constant import Const
 from web.biz.log import LogImpl
 from web.biz.myexception import *
 import traceback
+import time
+from utils import *
 
 
 class AssetsImpl(object):
@@ -91,18 +93,22 @@ class AssetsImpl(object):
                 self._dao.insert_my_assets(self._db, assets_code=_assets.code, user_id=_user.id)
                 self.log_impl.log(user_id=_user.id, user_name=_user.name, op_type=Const.OpType.新建.value,
                                   assets_code=_assets.code,
-                                  assets_name=_assets.name, _log=message, is_commit=True, is_print=False)
+                                  assets_name=_assets.name, _log=message, is_commit=False, is_print=False)
+                self._img_db.commit()
+                self._db.commit()
                 status = Const.OpStatus.成功
             else:
                 message = "添加资产,代码和名称是必须的，代码为: %s 名称为：%s" % (_assets.code, _assets.name)
                 # self.log_impl.log(user_id=_user.id, user_name=_user.name, op_type=Const.OpType.新建.value,
                 #                   assets_code=_assets.code, assets_name=_assets.name, _log=message,
                 #                   is_commit=True, is_print=False)
+                my_print("trace_id:{} message:{}".format(trace_id, message))
         except BaseException as b:
             tb = traceback.format_exc()
-            self._dao.rollback(self._db)
+            self._db.rollback()
+            self._img_db.rollback()
             e_str = '新建资产 %s(%s)失败,跟踪号: %s' % (_assets.name, _assets.code, trace_id)
-            print(e_str + "\r\n" + tb)
+            my_print(e_str + "\r\n" + tb)
         if e_str:
             raise CreateAssetsException(e_str)
         return status, ret_assets, Const.OpType.新建, message
@@ -116,9 +122,9 @@ class AssetsImpl(object):
                                                            src_status=_assets.status,
                                                            dst_status=Const.AssetsStatus.已借出.value)
             if bret:
-                self._dao.insert_note(self._db, assets_code=_assets.code, assets_name=_assets.name,
-                                      src_user_id=_assets.user_id,
-                                      dst_user_id=_user.id, reason=reason, _log=message)
+                _note = dto.NoteDto(None, _assets.code, _assets.user_id, _user.id, None, reason, '',
+                                    time.time(), time.time() + _assets.limit_time)
+                self._dao.insert_note(self._db, _note=_note)
                 self.log_impl.log(user_id=_user.id, user_name=_user.name, op_type=Const.OpType.借出.value,
                                   assets_code=_assets.code, assets_name=_assets.name, _log=message)
                 self._dao.commit(self._db)
@@ -136,19 +142,23 @@ class AssetsImpl(object):
         e_str = None
         status = Const.OpStatus.失败
         try:
-            _row = self._dao.get_my_assets(self._db, assets_code=_assets.code, user_id=_user.id)
+            _row = self._dao.is_my_mng_assets(self._db, user_id=_user.id, assets_code=_assets.code)
             if not _row:
                 message = "资产: {0} 不由你管理，不能完成归还动作".format(_assets.name)
             else:
                 src_user = self._dao.get_user_by_id(self._db, _assets.user_id)
                 dst_user = self._dao.get_user_by_id(self._db, _assets.dst_user_id)
+                _note = self._dao.get_note_by_assets_code(self._db, _assets.code)
+                if reason:
+                    _note.return_reason = "{} {}".format(_note.return_reason, reason)
                 message = '管理员:{} 归还了 {} 借的 {} 的 {}'.format(_user.name, dst_user.name, src_user.name, _assets.name)
 
                 self._dao.update_assert_status(self._db, _assets.code, _user.id, _user.name, _user.mobile,
-                                               _assets.status, Const.AssetsStatus.已归还)
+                                               _assets.status, Const.AssetsStatus.已归还.value)
 
-                # self._dao.insert_note_his(self._db, _assets=_assets, mng_user=_user,
-                #                           src_user=src_user, dst_user=dst_user, _note=_note, _log=message)
+                self._dao.insert_note_his(self._db, _assets=_assets, mng_user=_user,
+                                          src_user=src_user, dst_user=dst_user, _note=_note,
+                                          _log=message)
 
                 self.log_impl.log(user_id=_user.id, user_name=_user.name, op_type=Const.OpType.归还.value,
                                   assets_code=_assets.code, assets_name=_assets.name, _log=message,

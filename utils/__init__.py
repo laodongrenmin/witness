@@ -110,11 +110,12 @@ def my_print_2(str_log):
 LIMIT_LEN = 2048
 
 
-def get_print_string(msgs, limit_len=256):
+def get_print_string(msgs, limit_len=256, is_float_to_time=False):
     """
     截取打印字符，避免太长输出打印console太多内容，看不起其他的内容
     :param msgs: 想输出打印的变量
     :param limit_len: 最大想截取的长度，最大不会超过2048
+    :param is_float_to_time: 是否把float转化为日期格式显示
     :return: 截取后的可打印内容
     """
 
@@ -129,18 +130,25 @@ def get_print_string(msgs, limit_len=256):
         for msg in msgs:
             if (type(msg) == bytes or type(msg) == bytearray) and len(msg) > limit_len:
                 lst.append(['too long, len is {}' .format(len(msg),), msg[:128], msg[-128:]])
+            elif is_float_to_time and type(msg) == float:  # 这个逻辑是不对的，应该判断字段是stamp time类型
+                lst.append("{}.{:0=3d}".format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(msg)), int(msg * 1000 % 1000)))
             else:
                 lst.append(msg)
         ret = tuple(lst)
     elif isinstance(msgs, dict):
         d = dict()
         for key, value in msgs.items():
-            if (type(value) == bytes or type(value) == bytearray) and len(value) > limit_len:
+            if is_float_to_time and type(msgs) == float:
+                ret = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(msgs))
+            elif (type(value) == bytes or type(value) == bytearray) and len(value) > limit_len:
                 value = ['too long, len is {}' .format(len(value),), value[:128], value[-128:]]
             d[key] = value
         ret = d
     else:
-        ret = msgs
+        if is_float_to_time and type(msgs) == float:
+            ret = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(msgs))
+        else:
+            ret = msgs
     return ret
 
 

@@ -67,11 +67,11 @@ def get_assets_image_by_code(_img_db, code, _db=None):
 
 
 def insert_assets(_db, _img_db, code=None, user_id=None, user_name=None, user_mobile=None, assets_name=None,
-                  assets_category=None, assets_memo=None, image=None, _assets=None, is_commit=False):
+                  assets_category=None, assets_memo=None, image=None, limit_time=None, _assets=None, is_commit=False):
     assets_dao = AssetsDao(_db, _img_db)
     return assets_dao.insert_assets(code=code, user_id=user_id, user_name=user_name, user_mobile=user_mobile,
                                     assets_name=assets_name, assets_category=assets_category, assets_memo=assets_memo,
-                                    image=image, _assets=_assets, is_commit=is_commit)
+                                    image=image, limit_time=limit_time, _assets=_assets, is_commit=is_commit)
 
 
 def update_assert_status(_db, code=None, user_id=None, user_name=None, user_mobile=None,
@@ -126,12 +126,9 @@ def get_note_by_assets_code(_db, code):
     return note_dao.get_note_by_assets_code(code=code)
 
 
-def insert_note(_db, assets_code=None, assets_name=None, src_user_id=None, dst_user_id=None,
-                witness_id=None, reason=None, _log=None, is_commit=False):
+def insert_note(_db, _note=None, is_commit=False):
     note_dao = NoteDao(_db)
-    note_dao.insert_note(assets_code=assets_code, assets_name=assets_name, src_user_id=src_user_id,
-                         dst_user_id=dst_user_id, witness_id=witness_id, reason=reason, _log=_log,
-                         is_commit=is_commit)
+    note_dao.insert_note(_note=_note, is_commit=is_commit)
 
 
 def del_note_by_id(_db, pid, is_commit=False):
@@ -140,8 +137,8 @@ def del_note_by_id(_db, pid, is_commit=False):
 
 
 # --------------------  NOTE_HIS  -----------------------------
-def insert_note_his(_db, _assets=None, mng_user=None, src_user=None, dst_user=None,
-                    _note=None, _log=None, is_commit=False):
+def insert_note_his(_db, _assets=None, mng_user=None, src_user=None, dst_user=None, _note=None,
+                    _log=None, is_commit=False):
     note_his_dao = NoteHisDao(_db)
     note_his_dao.insert_note_his(_assets=_assets, mng_user=mng_user, src_user=src_user,
                                  dst_user=dst_user, _note=_note, _log=_log, is_commit=is_commit)

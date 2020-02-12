@@ -23,19 +23,19 @@ class MyAssetsDao(object):
                 )"""
 
     insert_sql = "insert into MY_ASSETS(ID, ASSETS_CODE, USER_ID, CREATE_TIME) values(?,?,?,?)"
-    query_sql = "select ID, CODE, USER_ID, CREATE_TIME from MY_ASSETS"
+    query_sql = "select ID, ASSETS_CODE, USER_ID, CREATE_TIME from MY_ASSETS"
 
     def __init__(self, _db: DB):
         self._db = _db
 
     def create_table(self):
         self._db.create_table(MyAssetsDao.create_sql)
-        self._db.execute("CREATE INDEX ID_CODE_INDEX ON MY_ASSETS(USER_ID, CODE)")
-        self._db.execute("CREATE INDEX CODE_ID_INDEX ON MY_ASSETS(CODE, USER_ID)")
+        self._db.execute("CREATE INDEX ID_CODE_INDEX ON MY_ASSETS(USER_ID, ASSETS_CODE)")
+        self._db.execute("CREATE INDEX CODE_ID_INDEX ON MY_ASSETS(ASSETS_CODE, USER_ID)")
 
     def is_my_mng_assets(self, user_id=None, assets_code=None):
-        row = self._db.get_one('select user_id, code from my_assets where user_id=? and code=?',
-                         (user_id, assets_code))
+        row = self._db.get_one('select user_id, assets_code from my_assets where user_id=? and assets_code=?',
+                               (user_id, assets_code,))
         return row is not None
 
     def get_my_assets(self, user_id=None, assets_code=None):

@@ -23,6 +23,7 @@ class AssetsDao(object):
                 MEMO TEXT(500),
                 IMAGE BLOB,         -- 缩略图
                 CREATE_TIME TIMESTAMP,
+                LIMIT_TIME INT,         -- 限制借出时间， 提醒时间
                 
                 DST_USER_ID INT,              -- 借物品的人的用户ID
                 DST_USER_NAME VARCHAR (40),   -- 借物品的人的名字，用于我的物品
@@ -34,10 +35,10 @@ class AssetsDao(object):
                 FOREIGN KEY(USER_ID) REFERENCES USER(ID))
     """
     insert_sql = "insert into assets(code, user_id, user_name, name, " \
-                 "category, memo, image, create_time, dst_user_id, dst_user_name, dst_user_mobile," \
-                 "status, op_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                 "category, memo, image, create_time, limit_time, dst_user_id, dst_user_name, dst_user_mobile," \
+                 "status, op_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
     query_sql = "select t.code, t.user_id, t.user_name, t.name, t.category, t.memo, t.image, t.create_time," \
-                "t.dst_user_id, t.dst_user_name, t.dst_user_mobile, t.status, t.op_time from assets t"
+                "t.limit_time, t.dst_user_id, t.dst_user_name, t.dst_user_mobile, t.status, t.op_time from assets t"
 
     img_create_sql = """CREATE TABLE IMAGES(
         ID INTEGER PRIMARY KEY, 
@@ -64,8 +65,9 @@ class AssetsDao(object):
     def row2asserts(row):
         if row:
             return AssetsDto(code=row[0], user_id=row[1], user_name=row[2], name=row[3],
-                             category=row[4], memo=row[5], image=row[6], create_time=row[7], dst_user_id=row[8],
-                             dst_user_name=row[9], dst_user_mobile=row[10], status=row[11], op_time=row[12])
+                             category=row[4], memo=row[5], image=row[6], create_time=row[7], limit_time=row[8],
+                             dst_user_id=row[9], dst_user_name=row[10], dst_user_mobile=row[11],
+                             status=row[12], op_time=row[13])
         return None
 
     def get_assets_by_code(self, code: str):
@@ -106,22 +108,23 @@ class AssetsDao(object):
         return None, None, None
 
     def insert_assets(self, code=None, user_id=None, user_name=None, user_mobile=None, assets_name=None,
-                      assets_category=None, assets_memo=None, image=None,
+                      assets_category=None, assets_memo=None, image=None, limit_time=31536000,
                       _assets=None, is_commit=False):
         if _assets and isinstance(_assets, AssetsDto):
             src_image, thb_image, header = self.parse_image(_assets.image)
             code = _assets.code
             para = (_assets.code, _assets.user_id, _assets.user_name, _assets.name, _assets.category,
-                    _assets.memo, thb_image, time.time(), _assets.dst_user_id, _assets.dst_user_name,
+                    _assets.memo, thb_image, time.time(), _assets.limit_time, _assets.dst_user_id,
+                    _assets.dst_user_name,
                     _assets.dst_user_mobile, _assets.status, time.time())
         else:
             src_image, thb_image, header = self.parse_image(image)
             para = (code, user_id, user_name, assets_name, assets_category, assets_memo, thb_image, time.time(),
-                    user_id, user_name, user_mobile, 0, time.time())
+                    limit_time, user_id, user_name, user_mobile, 0, time.time())
         sql = AssetsDao.insert_sql
         self._db.insert_one(sql=sql, para=para, is_commit=is_commit)
         # 图片保存缩略图到数据库里面，大图保存到另外的数据库或者文件系统里面
-        self._img_db.insert_one(sql=AssetsDao.img_insert_sql, para=(None, code, header, src_image))
+        self._img_db.insert_one(sql=AssetsDao.img_insert_sql, para=(None, code, header, src_image), is_commit=is_commit)
         return AssetsDto(para)
 
     def update_assert_status(self, code=None, user_id=None, user_name=None, user_mobile=None,
