@@ -13,12 +13,14 @@ from web.dao.db import DB
 import os
 import time
 from web.conf import Conf
+from utils import *
+import sqlite3
 
 __all__ = [
            'get_test_db', 'get_test_img_db', 'get_trace_id',
            'get_test_user_dto', 'get_test_book_assets_dto',
            'get_test_request',
-           'get_borrow_reason', 'get_return_reason']
+           'get_borrow_reason', 'get_return_reason', 'show_db', 'show_table_content', 'show_table_desc']
 
 
 def get_test_user_dto():
@@ -98,4 +100,41 @@ def get_return_reason():
 
 def get_trace_id():
     return 'generate_trace_id_999999'
+
+
+def show_table_desc(conn, table_name, limit_len=4096):
+    sql = 'PRAGMA table_info({})'.format(table_name)
+    cur = conn.cursor()
+    cur.execute(sql)
+    rows = cur.fetchone()
+    while rows:
+        rows_print = get_print_string(rows, limit_len, True)
+        my_print(rows_print)
+        rows = cur.fetchone()
+    cur.close()
+
+
+def show_table_content(conn, table_name, limit_len=4096):
+    cur = conn.cursor()
+    cur.execute("select * from %s" % table_name)
+    rows = cur.fetchone()
+    while rows:
+        rows_print = get_print_string(rows, limit_len, True)
+        my_print(rows_print)
+        rows = cur.fetchone()
+    cur.close()
+
+
+def show_db(file_path, limit_len=4096):
+    with sqlite3.connect(database=file_path) as conn:
+        query_table_sql = "select name from sqlite_master where type='table'"
+        t_cur = conn.cursor()
+        t_cur.execute(query_table_sql)
+        t_rows = t_cur.fetchone()
+        while t_rows:
+            table_name = t_rows[0]
+            my_print('-' * 15 + file_path + '(' + table_name + ')' + '-' * 15)
+            show_table_desc(conn, table_name, limit_len)
+            show_table_content(conn, table_name, limit_len)
+            t_rows = t_cur.fetchone()
 

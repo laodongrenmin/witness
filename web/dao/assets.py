@@ -123,8 +123,9 @@ class AssetsDao(object):
                     limit_time, user_id, user_name, user_mobile, 0, time.time())
         sql = AssetsDao.insert_sql
         self._db.insert_one(sql=sql, para=para, is_commit=is_commit)
-        # 图片保存缩略图到数据库里面，大图保存到另外的数据库或者文件系统里面
-        self._img_db.insert_one(sql=AssetsDao.img_insert_sql, para=(None, code, header, src_image), is_commit=is_commit)
+        if src_image:
+            # 图片保存缩略图到数据库里面，大图保存到另外的数据库或者文件系统里面
+            self._img_db.insert_one(sql=AssetsDao.img_insert_sql, para=(None, code, header, src_image), is_commit=is_commit)
         return AssetsDto(para)
 
     def update_assert_status(self, code=None, user_id=None, user_name=None, user_mobile=None,

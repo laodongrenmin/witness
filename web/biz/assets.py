@@ -42,11 +42,12 @@ class AssetsImpl(object):
     def get_image(self, code):
         return self._dao.get_assets_image_by_code(self._img_db, code=code)
 
-    def get_or_create_user(self, u: dto.UserDto):
+    def get_or_create_user(self, u: dto.UserDto, trace_id=None):
         """
         获取用户信息,根据u.log_name查询用户,
         如果用户存在,直接返回,不存在,根据U创建新用户并返回
         :param u:
+        :param trace_id:
         :return:
         """
         ret_user = self._dao.get_user_by_login_name(self._db, u.login_name)
@@ -54,12 +55,16 @@ class AssetsImpl(object):
             try:
                 self._dao.insert_user(self._db, u=u)
                 ret_user = self._dao.get_user_by_login_name(self._db, login_name=u.login_name)
+                message = '新建用户: {0}[{1}({2})]'.format(u.org, u.name, u.login_name)
                 self._dao.insert_log(self._db, user_id=ret_user.id, op_type=Const.OpType.系统.value, assets_code='',
-                                     assets_name='', _log='新建用户: {0}[{1}({2})]'.format(u.org, u.name, u.login_name),
+                                     assets_name='', _log=message,
                                      is_commit=True)
             except Exception as e:
-                self._dao.rollback(self._db)
-                ret_user = None
+                tb = traceback.format_exc()
+                self._db.rollback()
+                message = '获取或者创建用户失败, trace_id: {}'.format(trace_id,)
+                my_print(message + "\r\n" + tb)
+                raise CreateUserException(message)
         return ret_user
 
     def get_assets_by_code(self, code=None):
@@ -133,7 +138,7 @@ class AssetsImpl(object):
             tb = traceback.format_exc()
             self._dao.rollback(self._db)
             e_str = '%s 失败,跟踪号: %s' % (message, trace_id)
-            print(e_str + "\r\n" + tb)
+            my_print(e_str + "\r\n" + tb)
         if e_str:
             raise BorrowAssetsException(e_str)
         return Const.OpStatus.成功, message
@@ -144,7 +149,7 @@ class AssetsImpl(object):
         try:
             _row = self._dao.is_my_mng_assets(self._db, user_id=_user.id, assets_code=_assets.code)
             if not _row:
-                message = "资产: {0} 不由你管理，不能完成归还动作".format(_assets.name)
+                message = "资产: {0}({1}) 不由你管理，不能完成归还动作".format(_assets.name, _assets.code)
             else:
                 src_user = self._dao.get_user_by_id(self._db, _assets.user_id)
                 dst_user = self._dao.get_user_by_id(self._db, _assets.dst_user_id)
@@ -169,7 +174,7 @@ class AssetsImpl(object):
             tb = traceback.format_exc()
             self._db.rollback()
             e_str = '归还资产 %s(%s) 失败,跟踪号: %s' % (_assets.name, _assets.code, trace_id)
-            print(e_str + "\r\n" + tb)
+            my_print(e_str + "\r\n" + tb)
         if e_str:
             raise ReturnAssetsException(e_str)
         return status, message
@@ -195,12 +200,9 @@ class AssetsImpl(object):
                 op_type = Const.OpType.借出
                 status, message = self.borrow_assets(_user=_user, _assets=_assets,
                                                      reason=assets_reason, trace_id=trace_id)
-
-        # _note = self._dao.get_note_by_assets_code(self._db, assets_code)
-        # if _note:
-        #     op_type = Const.OpType.归还
-        #     status, message = self.return_assets(_user=_user, _assets=_assets, _note=_note, trace_id=trace_id)
-        # else:
-
+        else:
+            status, op_type, message = Const.OpStatus.其他, Const.OpType.查询, \
+                                       "资产代码: {} 还未入库, 不能借还。".format(assets_code)
+            my_print("trace_id:{} message:{}".format(trace_id, message))
         return status, op_type, message
 

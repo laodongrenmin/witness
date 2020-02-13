@@ -19,7 +19,7 @@ def get_image(req: HttpRequest, code):
     op_type = Const.OpType.查询
     if code:
         assets_impl = AssetsImpl(_db=req.my_db, _img_db=req.my_img_db)
-        code, header, image = assets_impl.get_image(code=code)
+        tmp_code, header, image = assets_impl.get_image(code=code)
         if image:
             content_type = "application/octet-stream"
             if header:
@@ -34,7 +34,7 @@ def get_image(req: HttpRequest, code):
         else:
             req.res_command = ResponseCode.NOT_FOUND
             package_body(req=req, status=Const.OpStatus.成功, op_type=op_type,
-                         message='没有图像记录或者图像记录格式不对')
+                         message='资产代码:{0}, 没有图像记录或者图像记录格式不对'.format(code,))
     else:
         req.res_command = ResponseCode.BAD_REQUEST
         package_body(req=req, status=Const.OpStatus.失败, op_type=op_type,
@@ -92,7 +92,10 @@ def do_get(req: HttpRequest):
 def do_post(req: HttpRequest):
     assets_impl = AssetsImpl(_db=req.my_db, _img_db=req.my_img_db)
     if isinstance(req, HttpRequest):
-        pass
+        _user, _assets, reason, trace_id = get_post_data(req)
+        _user = assets_impl.get_or_create_user(_user, trace_id)  # 如果session有了，应该先从session里面获取
+        status, op_type, message = assets_impl.do_biz(_assets.code, reason, _user=_user, trace_id=trace_id)
+        package_body(req=req, status=status, op_type=op_type, message=message)
     else:
         raise Exception('para req is not HttpRequest')
     return True

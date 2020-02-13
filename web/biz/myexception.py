@@ -13,6 +13,10 @@ class NoAssets(Exception):
     pass
 
 
+class CreateUserException(Exception):
+    pass
+
+
 class CreateAssetsException(Exception):
     pass
 

@@ -29,6 +29,7 @@ class UserDao(object):
 
     def create_table(self):
         self._db.create_table(UserDao.create_sql)
+        self._db.execute("create index USER_IND_LOGIN_NAME on USER(LOGIN_NAME)")
 
     def get_user_by_login_name(self, login_name: str):
         sql = UserDao.query_sql + " where LOGIN_NAME = ?"
@@ -50,9 +51,23 @@ class UserDao(object):
 
     def insert_user(self, login_name=None, name=None, mobile=None, depart=None, org=None, memo=None,
                     u=None, is_commit=False):
+        """
+        参数传入 u 或者 login_name 是tuple时候，id使用传入的数据， 按照各个变量传入， id使用None
+        :param login_name:
+        :param name:
+        :param mobile:
+        :param depart:
+        :param org:
+        :param memo:
+        :param u:
+        :param is_commit:
+        :return:
+        """
         sql = UserDao.insert_sql
-        if u and isinstance(u, UserDto):  # 当第一个参数是DTO时候
-            para = (None, u.login_name, u.name, u.mobile, 0, u.depart, u.org, u.memo)
+        if u and isinstance(u, UserDto):
+            para = (u.id, u.login_name, u.name, u.mobile, 0, u.depart, u.org, u.memo)
+        elif isinstance(login_name, tuple):
+            para = login_name
         else:
             para = (None, login_name, name, mobile, 0, depart, org, memo)
         self._db.insert_one(sql, para, is_commit)

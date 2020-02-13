@@ -18,6 +18,7 @@ class Const:
         归还 = 4
         生成借条 = 8
         查询 = 16
+        未操作 = 32
 
     class AssetsStatus(Enum):
         未借出 = 0

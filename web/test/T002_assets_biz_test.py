@@ -18,6 +18,7 @@ from utils import *
 from web.conf import Conf
 import web.dao as dao
 
+
 def pre_db(*args, **kwargs):
     t = args[0]
     t.me._db.close()
@@ -34,47 +35,10 @@ def pre_db(*args, **kwargs):
     create_table(t.me._db, t.me._img_db)
 
 
-def show_db(*args, **kwargs):
-    _show_db(Conf.db_file_path_rw)
+def show_my_db(*args, **kwargs):
+    show_db(Conf.db_file_path_rw)
     if Conf.db_file_path_img != Conf.db_file_path_rw:
-        _show_db(Conf.db_file_path_img)
-
-
-def _show_table_desc(conn, table_name):
-    sql = 'PRAGMA table_info({})'.format(table_name)
-    cur = conn.cursor()
-    cur.execute(sql)
-    rows = cur.fetchone()
-    while rows:
-        rows_print = get_print_string(rows, 4096, True)
-        my_print(rows_print)
-        rows = cur.fetchone()
-    cur.close()
-
-
-def _show_table_content(conn, table_name):
-    cur = conn.cursor()
-    cur.execute("select * from %s" % table_name)
-    rows = cur.fetchone()
-    while rows:
-        rows_print = get_print_string(rows, 4096, True)
-        my_print(rows_print)
-        rows = cur.fetchone()
-    cur.close()
-
-
-def _show_db(file_path):
-    with sqlite3.connect(database=file_path) as conn:
-        query_table_sql = "select name from sqlite_master where type='table'"
-        t_cur = conn.cursor()
-        t_cur.execute(query_table_sql)
-        t_rows = t_cur.fetchone()
-        while t_rows:
-            table_name = t_rows[0]
-            my_print('-' * 15 + file_path + '(' + table_name + ')' + '-' * 15)
-            _show_table_desc(conn, table_name)
-            _show_table_content(conn, table_name)
-            t_rows = t_cur.fetchone()
+        show_db(Conf.db_file_path_img)
 
 
 class AssetsImplTestCase(unittest.TestCase):
@@ -96,19 +60,30 @@ class AssetsImplTestCase(unittest.TestCase):
         my_print('准备测试：'+self.test_00000_pre_data.__doc__)
         pre_db(self)
 
-    def test_00001_create_user(self):
+    def test_00010_create_user(self):
+        """没有用户admin创建用户admin失败"""
+        my_print('准备测试：' + self.test_00010_create_user.__doc__)
+        self.userDto.id = 1
+        _user = self.me.get_or_create_user(u=self.userDto)
+        self.assertEqual(_user.login_name, self.userDto.login_name)
+
+    def test_00011_create_user(self):
         """没有用户admin创建用户admin成功"""
-        my_print('准备测试：' + self.test_00001_create_user.__doc__)
+        my_print('准备测试：' + self.test_00011_create_user.__doc__)
+        self.userDto.id = 3
+        self.userDto.login_name = 'login_name1'
+        self.userDto.name = 'admin1'
         _user = self.me.get_or_create_user(u=self.userDto)
 
         self.assertEqual(_user.login_name, self.userDto.login_name)
 
-    def test_00002_create_user(self):
+    def test_00012_create_user(self):
         """没有用户 admin2 创建用户 admin2 成功"""
-        my_print('准备测试：'+self.test_00002_create_user.__doc__)
+        my_print('准备测试：'+self.test_00012_create_user.__doc__)
+        self.userDto.id = None
         self.userDto.login_name = 'login_name2'
         self.userDto.name = 'admin2'
-        _user = self.me.get_or_create_user(u=self.userDto)
+        _user = self.me.get_or_create_user(u=self.userDto, trace_id=self.trace_id)
 
         self.assertEqual(_user.login_name, self.userDto.login_name)
 
@@ -221,9 +196,39 @@ class AssetsImplTestCase(unittest.TestCase):
         self.assertEqual(op_type.value, Const.OpType.借出.value, 'should be 借出')
         self.assertEqual(message, 'admin(18995533533)成功借出admin的图书(A8888)')
 
+    def test_00301_do_biz(self):
+        """资产代码code、用户login_name不能成功借出不存在的资产"""
+        my_print('准备测试：' + self.test_00300_do_biz.__doc__)
+
+        _user = dao.get_user_by_login_name(self.me._db, self.userDto.login_name)
+        status, op_type, message = \
+            self.me.do_biz(assets_code='self.assetsDto.code',
+                           assets_reason=self.assets_reason,
+                           _user=_user,
+                           trace_id=self.trace_id)
+
+        self.assertEqual(status, Const.OpStatus.其他, '不能借还不存在的资产')
+        self.assertEqual(op_type, Const.OpType.查询, 'should be 查询')
+        self.assertEqual(message, '资产代码: self.assetsDto.code 还未入库, 不能借还。')
+
     def test_00400_do_biz(self):
-        """资产代码code、管理者用户login_name成功还资产"""
+        """资产代码code、非管理者不能成功还资产，不是管理员"""
         my_print('准备测试：' + self.test_00400_do_biz.__doc__)
+        self.userDto.login_name = 'login_name2'
+        _user = dao.get_user_by_login_name(self.me._db, self.userDto.login_name)
+        status, op_type, message = \
+            self.me.do_biz(assets_code=self.assetsDto.code,
+                           assets_reason=self.return_assets_reason,
+                           _user=_user,
+                           trace_id=self.trace_id)
+
+        self.assertEqual(status.value, Const.OpStatus.失败.value, '不能成功还资产')
+        self.assertEqual(op_type.value, Const.OpType.归还.value, 'should be 归还')
+        self.assertEqual(message, '资产: 图书(A8888) 不由你管理，不能完成归还动作')
+
+    def test_00401_do_biz(self):
+        """资产代码code、管理者用户login_name成功还资产"""
+        my_print('准备测试：' + self.test_00401_do_biz.__doc__)
 
         _user = dao.get_user_by_login_name(self.me._db, self.userDto.login_name)
         status, op_type, message = \
@@ -236,23 +241,10 @@ class AssetsImplTestCase(unittest.TestCase):
         self.assertEqual(op_type.value, Const.OpType.归还.value, 'should be 归还')
         self.assertEqual(message, '管理员:admin 归还了 admin 借的 admin 的 图书')
 
-    def atest_00411_do_biz(self):
-        """资产代码code、非管理者不能成功还资产，不是管理员"""
-        my_print('准备测试：' + self.test_00411_do_biz.__doc__)
-        self.userDto.login_name = 'login_name2'
-        self.do_biz()   # 先借，然后还
-
-        status, _assets, op_type, message = self.do_biz()
-
-        self.assertEqual(status.value, Const.OpStatus.失败.value, '不能成功还资产')
-        self.assertNotEqual(_assets, None, 'should be not None.')
-        self.assertEqual(op_type.value, Const.OpType.归还.value, 'should be 归还')
-        self.assertEqual(message, '资产: 图书 不由你管理，不能完成归还动作')
-
     def test_99999_do_biz(self):
         """显示目前数据库的数据"""
         my_print('准备测试：' + self.test_99999_do_biz.__doc__)
-        show_db(self)
+        show_my_db(self)
 
 
 #
